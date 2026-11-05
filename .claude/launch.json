@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "familyapp", "runtimeExecutable": "python", "runtimeArgs": ["scripts/dev-server.py"], "port": 5173 }
+  ]
+}
