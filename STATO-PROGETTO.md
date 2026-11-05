@@ -56,6 +56,23 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
   - Il messaggio del proxy indica claude.ai → Settings → Capabilities (piani individuali) come posto giusto. Da verificare.
   - Domini necessari: github.com, api.github.com, supabase.com, api.supabase.com, *.supabase.co, vercel.com, api.vercel.com
   - Per GitHub potrebbe servire anche collegare l'account GitHub a Claude.
+- [x] **Incremento 1 costruito e pubblicato (6 nov 2026):** https://familyapp-gas.vercel.app — codice su GitHub `89gasgas/FamilyApp` (branch main).
+  - Tecnica: PWA in HTML/JS senza build (Node non è installato sul PC); Python per server locale e script. Libreria Supabase in `app/vendor/`.
+  - Database: `supabase/001_schema.sql` (famiglie, membri = elenco email autorizzate, prodotti; RLS per famiglia; funzione `add_item` che evita doppioni e riattiva i comprati; tempo reale).
+  - Collaudo locale con due utenti di prova (famiglia di prova, credenziali in `.test-users.json`, mai pubblicato) e un utente estraneo:
+    | Storia | Esito |
+    | --- | --- |
+    | SP-01 | Sessione ricordata dopo ricarica ✅; estraneo legge 0 righe e non scrive ✅ (`scripts/test-outsider.py`) |
+    | SP-02 | Aggiunta ✅; " Latte " non duplica ✅ |
+    | SP-03 | Chips aggiunge, GaS vede in < 1 s ✅ |
+    | SP-04 | Spunta offline immediata ✅; al ritorno online l'altro la vede ✅ |
+    | SP-05 | Comprati barrati e attenuati in fondo ✅; tocco li riattiva al loro posto ✅; riscrivere riattiva senza doppione ✅ |
+    | SP-06 | Trascinamento "pane" sopra "latte" resta dopo riapertura, su entrambi ✅; nuovi in fondo ✅ |
+    | SP-07 | Pulsante Volantini con Lidl e Mercatò ✅; apertura diretta del negozio di Racconigi ❌ non ancora (link generici) |
+  - Script: `scripts/deploy.py` (pubblica su Vercel), `scripts/git-push.py`, `scripts/sb-sql.py`, `scripts/sb-auth-config.py`, `scripts/dev-server.py` (http://localhost:5173, config in `.claude/launch.json`).
+- [ ] **BLOCCO APERTO: accesso con Google.** GaS deve creare il client OAuth su Google Cloud (gratis) e mettere `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` in `Segreti.txt`; poi Claude lancia `scripts/sb-auth-config.py`. URI di reindirizzamento da registrare: `https://tainzmzohihectvbqbyg.supabase.co/auth/v1/callback`; origine: `https://familyapp-gas.vercel.app`.
+- [ ] Indirizzi Gmail di GaS e Chips da inserire nella tabella `members` (famiglia reale da creare).
+- [ ] Non ancora fatti: controllo giornaliero anti-pausa Supabase e backup giornaliero (GitHub Actions); eliminazione di un prodotto (non prevista dalle user story).
 - [ ] Lista iniziale della spesa (in ordine di supermercato) da ricevere da GaS
 - [ ] Icona dell'app (facoltativa)
 - [ ] Rilettura delle user story da parte di Chips
