@@ -37,9 +37,9 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 ## Roadmap
 1. Fondamenta + lista della spesa condivisa (user story SP-01…SP-09 nel documento) ✅
 2. To-do condivise (TD-01…TD-07) ✅
-3. Notifiche (NT-01…NT-06) ✅ pubblicate, da collaudare sui telefoni
+3. Notifiche (NT-01…NT-06) ✅ (collaudate da GaS; manca la prova con Chips)
 4. Calendario (integrazione Google Calendar)
-5. Spese e finanze
+5. Spese e finanze → ridefinito come "Spese del mese" (solo uscite, stile Monefy): storie CO-01… in preparazione, GaS manda le categorie
 6. Ricorrenze e promemoria
 7. Liste libere (film, libri…)
 8. Archivio documenti
@@ -80,7 +80,7 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 - [x] **Incremento 2: to-do condivise pubblicate (6 nov 2026)** (TD-01…TD-07, approvate da GaS con le risposte: niente nota, "Fatte" mostra le ultime 10, quelle senza persona si vedono con "Solo le mie"). Tabella `tasks` (`supabase/006_todo.sql`, RLS per famiglia, tempo reale; il backup include le attività). Nell'app: schede in basso "Spesa" / "Da fare" (ricorda l'ultima; numerino rosso = scadute o di oggi), aggiunta con chip "Chi" (tocco = nessuno → Chips → GaS → tutti e due) e "📅 Quando", cerchietto per completare, ordine per scadenza (scadute in rosso), "Solo le mie", scheda di modifica ed eliminazione.
   - Collaudo locale con GaS (localhost) e Chips (127.0.0.1) ✅: aggiunta con persona e data, l'altro vede in < 2 s, completa/annulla, offline e risincronizzazione, "Solo le mie", modifica (correzione: salvataggio sul submit), annulla non salva, eliminazione arriva all'altro. Collaudate da GaS dal telefono ✅ (6 nov 2026).
 - [x] **Intestazione "Family App" con l'icona (6 nov 2026)** al posto dei titoli "Spesa"/"Da fare" (le schede in basso dicono dove sei). Sotto, in corsivo verde, una frase personale presa da `members.tagline` (`supabase/007_frase_personale.sql`) e mostrata solo a quel membro: per Chips "sei amata dal 2015, ogni giorno!" (sorpresa di GaS: non dire nulla a Chips). Collaudo con Chips di prova (frase visibile) e GaS di prova (nessuna frase) ✅. "Esci" spostato in fondo alla pagina ("Esci dall'account") perché la frase veniva tagliata da "Volantini"; ora la frase va a capo se serve e a 360 px sta su una riga.
-- [x] **Incremento 3: notifiche pubblicate (6 nov 2026)** (NT-01…NT-06 approvate da GaS e scritte nel documento). Da collaudare dal telefono.
+- [x] **Incremento 3: notifiche pubblicate (6 nov 2026)** (NT-01…NT-06 approvate da GaS e scritte nel documento). Funzionano sul telefono di GaS ✅ (6 nov 2026); prova con Chips ancora da fare.
   - Come funziona: un trigger del database (`supabase/008_notifiche.sql`) decide chi avvisare secondo i livelli di ognuno (`members.notify`: spesa nessuna/urgenti/tutte, da fare nessuna/per me/tutte, promemoria sì/no; iniziali nessuna, per me, sì), scrive un lavoro in `private.push_jobs` e chiama con pg_net la funzione Supabase `push` (`supabase/functions/push/index.ts`, pubblicata con `scripts/sb-deploy-function.py push`). La funzione prende il lavoro con il suo id (`push_take`), cifra (RFC 8291) e firma (VAPID) da sé, senza librerie, e invia; i telefoni non più validi vengono tolti (`push_done`). Telefoni registrati in `private.push_subs`. Promemoria: pg_cron ogni ora, invia solo alle 8 ora italiana (`private.push_morning`).
   - Chiavi VAPID create con `scripts/setup-push.py` (openssl): la privata solo nel database (`private.config`, fuori dal backup). Rigenerarle con `--rotate` obbliga a riattivare le notifiche sui telefoni.
   - Nell'app: invito "Vuoi ricevere le notifiche?" (Attiva / Non ora), ⚙️ Impostazioni in fondo alla pagina con i livelli e "Invia una prova"; tocco sulla notifica apre la scheda giusta; uscendo dall'account il telefono smette di ricevere. Icona piccola `icons/badge-96.png`.
