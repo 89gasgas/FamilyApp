@@ -168,8 +168,8 @@ dialog #td-edit-form { text-align: left; margin-top: 0; }
 .mo-row .name { padding-left: 10px; }
 .mo-pct { color: var(--muted); font-size: 13px; padding: 0 8px; }
 .mo-amt { padding-right: 12px; font-weight: 600; white-space: nowrap; }
-.mo-add { text-align: center; margin: 6px 0 0; }
-.mo-add + .hint { margin-top: 4px; }
+.mo-add { text-align: center; margin: 0 0 4px; }
+#mo-add { font-size: 14px; font-weight: 500; padding: 4px 10px; }
 #settings > div > button.ghost { display: block; }
 .vform { display: flex; flex-direction: column; gap: 12px; text-align: left; margin-top: 0; }
 dialog .vform { text-align: left; margin-top: 0; }
