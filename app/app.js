@@ -1,6 +1,13 @@
 /* FamilyApp: increment 1, shared shopping list (SP-01…SP-07). */
 (() => {
   'use strict';
+  // If the Supabase library failed to load (interrupted download), reload once instead of a blank page.
+  if (typeof window.supabase === 'undefined') {
+    let tried = false;
+    try { tried = sessionStorage.getItem('fa.reloaded') === '1'; sessionStorage.setItem('fa.reloaded', '1'); } catch (e) {}
+    if (!tried) { location.reload(); return; }
+  }
+  try { sessionStorage.removeItem('fa.reloaded'); } catch (e) {}
   const cfg = window.FA_CONFIG;
   const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
   // Local tests only: window.FA_TEST_OFFLINE = true simulates having no signal.
