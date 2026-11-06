@@ -37,7 +37,7 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 ## Roadmap
 1. Fondamenta + lista della spesa condivisa (user story SP-01…SP-09 nel documento) ✅
 2. To-do condivise (TD-01…TD-07) ✅
-3. Notifiche
+3. Notifiche (in corso: storie NT-01…NT-06 proposte a GaS, da approvare; ognuno sceglie il livello per sezione)
 4. Calendario (integrazione Google Calendar)
 5. Spese e finanze
 6. Ricorrenze e promemoria
@@ -82,11 +82,12 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 - [x] **Intestazione "Family App" con l'icona (6 nov 2026)** al posto dei titoli "Spesa"/"Da fare" (le schede in basso dicono dove sei). Sotto, in corsivo verde, una frase personale presa da `members.tagline` (`supabase/007_frase_personale.sql`) e mostrata solo a quel membro: per Chips "sei amata dal 2015, ogni giorno!" (sorpresa di GaS: non dire nulla a Chips). Collaudo con Chips di prova (frase visibile) e GaS di prova (nessuna frase) ✅. "Esci" spostato in fondo alla pagina ("Esci dall'account") perché la frase veniva tagliata da "Volantini"; ora la frase va a capo se serve e a 360 px sta su una riga.
 - [x] **Backup giornaliero e anti-pausa attivi (6 nov 2026).** Workflow `.github/workflows/backup.yml` ogni giorno alle 03:17 UTC (e a mano con `python scripts/gh-backup-run.py`; `--status` mostra le ultime esecuzioni). Chiama `backup_export` su Supabase (`supabase/005_backup.sql`): la chiamata tiene sveglio il progetto e scrive `backups/backup.json` nel repository solo se i dati cambiano (storico = versioni passate). La funzione accetta solo `BACKUP_KEY` (in `Segreti.txt` e nei segreti di GitHub; nel database c'è solo l'impronta SHA-256). Chiavi create da GaS lanciando `scripts/setup-backup.py` (il sistema l'aveva bloccato a Claude). Prima esecuzione su GitHub: successo, 322 prodotti salvati. In caso di errore GitHub manda un'email a GaS.
   - ⚠️ Il workflow fa commit su main: **prima di ogni `scripts/git-push.py` lanciare `scripts/git-pull.py`**.
-  - Ripristino: non ancora scritto uno script; i dati sono in JSON (tabelle families, members, shopping_items) e lo schema in `supabase/*.sql`.
+  - **Ripristino: `scripts/restore.py` (6 nov 2026).** `python scripts/restore.py --family reale` confronta soltanto il database con `backups/backup.json`; con `--apply` ripristina la famiglia in un'unica transazione: rimette famiglia e membri se mancano (i membri non vengono mai cancellati) e sostituisce la spesa e le to-do con quelle del backup. Con `--commit AAAA-MM-GG` usa il backup di quel giorno (storico di GitHub). Prima di cambiare salva i dati attuali in `backups/prima-del-ripristino-<ora>.json` (non va su GitHub). Collaudo sulla famiglia di prova ✅: dati cancellati e rovinati, ripristinati identici campo per campo, famiglia reale intatta.
 - [ ] Non ancora fatto: eliminazione di un prodotto (non prevista dalle user story).
 - [x] **Lista iniziale caricata (6 nov 2026)** con `supabase/003_lista_iniziale.sql`: 317 prodotti nell'ordine del supermercato di GaS, 12 da comprare e 305 comprati. I 12 da comprare sono stati messi vicino a prodotti simili (stima di Claude, si possono trascinare). Il doppione "Cipollotti" è stato saltato. Nomi lasciati come scritti da GaS, comprese parentesi e asterischi.
 - [x] **Icona dell'app (6 nov 2026):** casa bianca con cuore su verde (`scripts/make-icons.py`), al posto del cestino della spesa.
 - [ ] Rilettura delle user story da parte di Chips
+- [x] **Sorpresa fatta (6 nov 2026):** Chips usa l'app e funziona tutto. Il vincolo "non inviare nulla a Chips" non vale più.
 
 ## Primo passo in una nuova chat
 1. Leggere questo file e il documento di specifica.

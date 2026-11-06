@@ -3,3 +3,4 @@ Segreti.txt
 .claude/settings.local.json
 __pycache__/
 app/config.js
+backups/prima-del-ripristino-*.json
