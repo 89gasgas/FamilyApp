@@ -94,11 +94,9 @@
         <svg viewBox="0 0 100 100" aria-hidden="true"><g id="mo-donut" transform="rotate(-90 50 50)"></g></svg>
         <div class="ring-center"><b id="mo-total"></b><small id="mo-sub"></small></div>
       </div>
-      <p class="hint center">Tocca un'icona per aggiungere una spesa</p>
+      <p class="mo-add"><button type="button" id="mo-add" class="primary">+ Aggiungi spesa</button></p>
+      <p class="hint center">oppure tocca l'icona di una categoria</p>
       <ul id="mo-list" class="items"></ul>
-      <p class="mo-tools">
-        <button type="button" id="mo-export" class="ghost small">⬇️ Esporta per Excel</button>
-      </p>
     </section>
 
   </main>
@@ -128,7 +126,7 @@
     <form method="dialog" id="ex-form" class="vform">
       <h2 id="ex-title">Nuova spesa</h2>
       <label>Importo (€)<input id="ex-amount" class="big-amount" inputmode="decimal" autocomplete="off" placeholder="0,00" required></label>
-      <label>Categoria<select id="ex-cat"></select></label>
+      <label>Categoria<select id="ex-cat" required></select></label>
       <label>Nota<input id="ex-note" placeholder="facoltativa" autocomplete="off"></label>
       <label>Data<input type="date" id="ex-date" required></label>
       <p id="ex-err" class="hint danger" hidden>Scrivi un importo maggiore di zero.</p>
@@ -186,6 +184,7 @@
     <div id="st-money">
     <h3>💶 Spese</h3>
     <button type="button" id="mo-cats" class="ghost">✏️ Modifica le categorie</button>
+    <button type="button" id="mo-export" class="ghost">⬇️ Esporta per Excel</button>
     </div>
     <h3>👤 Account</h3>
     <p id="st-who" class="st-line"></p>

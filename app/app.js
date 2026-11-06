@@ -682,7 +682,9 @@
     $('ex-title').textContent = e ? 'Modifica spesa' : `${c ? c.icon + ' ' + c.name : 'Nuova spesa'}`;
     $('ex-cat').replaceChildren(...catList(true).filter((x) => !x.hidden || x.id === cid)
       .map((x) => Object.assign(document.createElement('option'), { value: x.id, textContent: `${x.icon} ${x.name}` })));
-    $('ex-cat').value = cid;
+    if (!cid) $('ex-cat').prepend(Object.assign(document.createElement('option'), // generic add: pick it in the form
+      { value: '', textContent: 'Scegli la categoria…', disabled: true }));
+    $('ex-cat').value = cid || '';
     $('ex-amount').value = e ? (e.amount_cents / 100).toFixed(2).replace('.', ',') : '';
     $('ex-note').value = e ? e.note || '' : '';
     let day = isoDay(new Date());
@@ -727,6 +729,7 @@
     $('ex-dlg').close('cancel');
     commit();
   });
+  $('mo-add').addEventListener('click', () => openExpense(null));
   $('mo-ring').addEventListener('click', (e) => {
     const b = e.target.closest('.ring-icon');
     if (b) openExpense(b.dataset.cat);
