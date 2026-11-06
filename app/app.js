@@ -1,4 +1,4 @@
-/* FamilyApp: shared shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06). */
+/* FamilyApp: shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06), expenses (CO-01…CO-08). */
 (() => {
   'use strict';
   // If the Supabase library failed to load (interrupted download), reload once instead of a blank page.
@@ -22,6 +22,8 @@
   let me = null;            // { email, family_id, display_name }
   let items = new Map();    // id -> shopping item
   let tasks = new Map();    // id -> task (TD)
+  let expenses = new Map(); // id -> expense (CO)
+  let cats = new Map();     // id -> expense category (CO)
   let members = [];         // [{ email, display_name }] of my family
   let queue = [];           // pending changes, replayed when online
   let channel = null;
@@ -34,7 +36,8 @@
   // ---------- local persistence (SP-04 offline) ----------
   function save() {
     try {
-      localStorage.setItem(storeKey(), JSON.stringify({ items: [...items.values()], tasks: [...tasks.values()], members, queue }));
+      localStorage.setItem(storeKey(), JSON.stringify({ items: [...items.values()], tasks: [...tasks.values()],
+        expenses: [...expenses.values()], cats: [...cats.values()], members, queue }));
     } catch (e) {}
   }
   function loadLocal() {
@@ -43,6 +46,8 @@
       if (raw) {
         items = new Map(raw.items.map((i) => [i.id, i]));
         tasks = new Map((raw.tasks || []).map((i) => [i.id, i]));
+        expenses = new Map((raw.expenses || []).map((i) => [i.id, i]));
+        cats = new Map((raw.cats || []).map((i) => [i.id, i]));
         members = raw.members || [];
         queue = raw.queue || [];
       }
@@ -89,6 +94,7 @@
     $('urgent-only').checked = urgentOnly;
     $('bought-title').hidden = bou.length === 0;
     renderTodo();
+    renderMoney();
     renderSync();
   }
   function renderSync() {
@@ -103,9 +109,9 @@
   }
 
   // ---------- local changes ----------
-  const SHOP = 'shopping_items', TASKS = 'tasks';
+  const SHOP = 'shopping_items', TASKS = 'tasks', EXP = 'expenses', CATS = 'expense_categories';
   const tableOf = (op) => op.t || SHOP; // ops saved before TD have no table: shopping
-  const mapOf = (t) => (t === TASKS ? tasks : items);
+  const mapOf = (t) => ({ [TASKS]: tasks, [EXP]: expenses, [CATS]: cats }[t] || items);
   function setFields(id, fields, t = SHOP) {
     const it = mapOf(t).get(id);
     if (!it) return;
@@ -167,16 +173,25 @@
     return map;
   }
 
+  async function rows(t) { // all of the family's rows, past the server's 1000-row page
+    const out = [];
+    for (let from = 0; ; from += 1000) {
+      const r = await sb.from(t).select('*').eq('family_id', me.family_id).order('id').range(from, from + 999);
+      if (r.error) return r;
+      out.push(...r.data);
+      if (r.data.length < 1000) return { data: out };
+    }
+  }
+
   async function fetchAll() {
-    const [a, b, m] = await Promise.all([
-      sb.from(SHOP).select('*').eq('family_id', me.family_id),
-      sb.from(TASKS).select('*').eq('family_id', me.family_id),
-      sb.from('members').select('email,display_name').eq('family_id', me.family_id),
-    ]);
-    const error = a.error || b.error || m.error;
+    const [a, b, e, c, m] = await Promise.all([rows(SHOP), rows(TASKS), rows(EXP), rows(CATS),
+      sb.from('members').select('email,display_name').eq('family_id', me.family_id)]);
+    const error = a.error || b.error || e.error || c.error || m.error;
     if (error) { if (isNetErr(error)) setOnline(false); return; }
     items = applyPending(new Map(a.data.map((i) => [i.id, i])), SHOP);
     tasks = applyPending(new Map(b.data.map((i) => [i.id, i])), TASKS);
+    expenses = applyPending(new Map(e.data.map((i) => [i.id, i])), EXP);
+    cats = applyPending(new Map(c.data.map((i) => [i.id, i])), CATS);
     members = m.data.sort((x, y) => x.display_name.localeCompare(y.display_name));
     save(); render();
   }
@@ -189,10 +204,11 @@
         const op = queue[0];
         let res;
         try {
-          if (tableOf(op) === TASKS) {
-            if (op.op === 'add') res = await sb.from(TASKS).upsert(op.row, { onConflict: 'id', ignoreDuplicates: true });
-            else if (op.op === 'del') res = await sb.from(TASKS).delete().eq('id', op.id);
-            else res = await sb.from(TASKS).update(op.fields).eq('id', op.id);
+          if (tableOf(op) !== SHOP) { // to-dos, expenses, categories
+            const tb = sb.from(tableOf(op));
+            if (op.op === 'add') res = await tb.upsert(op.row, { onConflict: 'id', ignoreDuplicates: true });
+            else if (op.op === 'del') res = await tb.delete().eq('id', op.id);
+            else res = await tb.update(op.fields).eq('id', op.id);
           } else if (op.op === 'add') {
             res = await sb.rpc('add_item', { p_id: op.id, p_name: op.name, p_position: op.position,
                                              p_optional: !!op.optional });
@@ -235,15 +251,18 @@
           if (queue.some((q) => q.id === id)) return; // our pending change wins until it is sent
           if (p.eventType === 'DELETE') items.delete(id); else items.set(id, p.new);
           save(); render();
-        })
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: TASKS, filter: 'family_id=eq.' + me.family_id },
-        (p) => { // TD-03 real time
+        });
+    for (const t of [TASKS, EXP, CATS]) {
+      channel.on('postgres_changes',
+        { event: '*', schema: 'public', table: t, filter: 'family_id=eq.' + me.family_id },
+        (p) => { // TD-03, CO-06 real time
           const id = (p.new && p.new.id) || (p.old && p.old.id);
           if (queue.some((q) => q.id === id)) return;
-          if (p.eventType === 'DELETE') tasks.delete(id); else tasks.set(id, p.new);
+          if (p.eventType === 'DELETE') mapOf(t).delete(id); else mapOf(t).set(id, p.new);
           save(); render();
-        })
+        });
+    }
+    channel
       .subscribe((status) => { if (status === 'SUBSCRIBED') { setOnline(true); flush(); fetchAll(); } });
   }
 
@@ -536,6 +555,309 @@
     } else openEdit(t.id);
   });
 
+  // ---------- monthly expenses (CO-01…CO-08) ----------
+  const eur = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', useGrouping: 'always' });
+  const money = (cents) => eur.format(cents / 100);
+  const isoDay = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const PALETTE = ['#3b7dd8', '#2f9e5b', '#d9534f', '#e6a700', '#8e5cc4', '#1fa3a3', '#f08a24', '#e2589b', '#5c6bc0', '#7a6a58'];
+  let moMode = 'month';
+  let moAt = new Date(); moAt = new Date(moAt.getFullYear(), moAt.getMonth(), 1); // first day of the shown period
+  try { if (localStorage.getItem('fa.moMode') === 'year') moMode = 'year'; } catch (e) {}
+
+  const catList = (all) => [...cats.values()].filter((c) => all || !c.hidden)
+    .sort((a, b) => a.position - b.position || a.name.localeCompare(b.name));
+  function periodRange() {
+    const y = moAt.getFullYear(), m = moAt.getMonth();
+    const from = moMode === 'year' ? new Date(y, 0, 1) : new Date(y, m, 1);
+    const to = moMode === 'year' ? new Date(y + 1, 0, 1) : new Date(y, m + 1, 1);
+    return [isoDay(from), isoDay(to)];
+  }
+  const inPeriod = () => { const [a, b] = periodRange(); return [...expenses.values()].filter((e) => e.spent_on >= a && e.spent_on < b); };
+  function periodLabel() {
+    return moMode === 'year' ? String(moAt.getFullYear())
+      : cap(moAt.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' }));
+  }
+  function isCurrentPeriod() {
+    const now = new Date();
+    return moAt.getFullYear() === now.getFullYear() && (moMode === 'year' || moAt.getMonth() === now.getMonth());
+  }
+
+  function renderMoney() { // CO-02, CO-04
+    if (!me) return;
+    const list = inPeriod();
+    const byCat = new Map();
+    for (const e of list) byCat.set(e.category_id, (byCat.get(e.category_id) || 0) + e.amount_cents);
+    const total = [...byCat.values()].reduce((a, b) => a + b, 0);
+    $('mo-label').textContent = periodLabel();
+    $('mo-next').disabled = isCurrentPeriod();
+    for (const b of $('mo-mode').children) b.classList.toggle('on', b.dataset.v === moMode);
+    $('mo-total').textContent = money(total);
+    $('mo-sub').textContent = total ? `${list.length} ${list.length === 1 ? 'spesa' : 'spese'}` : 'nessuna spesa';
+
+    // donut: one arc per category, in category order
+    const C = 2 * Math.PI * 38, svgNS = 'http://www.w3.org/2000/svg';
+    const arcs = [];
+    const bg = document.createElementNS(svgNS, 'circle');
+    Object.entries({ cx: 50, cy: 50, r: 38, fill: 'none', 'stroke-width': 13, class: 'donut-bg' }).forEach(([k, v]) => bg.setAttribute(k, v));
+    arcs.push(bg);
+    let start = 0;
+    for (const c of catList(true)) {
+      const v = byCat.get(c.id);
+      if (!v) continue;
+      const len = (v / total) * C;
+      const a = document.createElementNS(svgNS, 'circle');
+      Object.entries({ cx: 50, cy: 50, r: 38, fill: 'none', 'stroke-width': 13, stroke: c.color,
+        'stroke-dasharray': `${Math.max(len - 0.4, 0.01)} ${C}`, 'stroke-dashoffset': -start }).forEach(([k, v2]) => a.setAttribute(k, v2));
+      arcs.push(a);
+      start += len;
+    }
+    $('mo-donut').replaceChildren(...arcs);
+
+    // icons around the ring: tap = add an expense in that category (CO-03)
+    const ring = $('mo-ring');
+    ring.querySelectorAll('.ring-icon').forEach((n) => n.remove());
+    const shown = catList(false);
+    shown.forEach((c, i) => {
+      const ang = (-90 + (360 / shown.length) * i) * Math.PI / 180;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ring-icon';
+      b.dataset.cat = c.id;
+      b.title = c.name;
+      b.setAttribute('aria-label', 'Aggiungi spesa: ' + c.name);
+      b.textContent = c.icon;
+      b.style.left = `${50 + 44 * Math.cos(ang)}%`;
+      b.style.top = `${50 + 44 * Math.sin(ang)}%`;
+      b.style.borderColor = c.color;
+      b.style.background = `color-mix(in srgb, ${c.color} 22%, var(--card))`;
+      ring.appendChild(b);
+    });
+
+    // categories of the period, highest first
+    const rowsOut = [...byCat.entries()].sort((a, b) => b[1] - a[1]).map(([id, v]) => {
+      const c = cats.get(id) || { name: '?', icon: '❔', color: '#888' };
+      const li2 = document.createElement('li');
+      li2.className = 'item mo-row';
+      li2.dataset.cat = id;
+      li2.innerHTML = '<span class="mo-ic"></span><span class="name"></span><span class="mo-pct"></span><span class="mo-amt"></span>';
+      li2.querySelector('.mo-ic').textContent = c.icon;
+      li2.querySelector('.mo-ic').style.background = c.color;
+      li2.querySelector('.name').textContent = c.name;
+      li2.querySelector('.mo-pct').textContent = Math.round((v / total) * 100) + '%';
+      li2.querySelector('.mo-amt').textContent = money(v);
+      return li2;
+    });
+    $('mo-list').replaceChildren(...rowsOut);
+    if ($('cat-dlg').open) renderCatDetail();
+  }
+
+  $('mo-prev').addEventListener('click', () => {
+    moAt = moMode === 'year' ? new Date(moAt.getFullYear() - 1, 0, 1) : new Date(moAt.getFullYear(), moAt.getMonth() - 1, 1);
+    renderMoney();
+  });
+  $('mo-next').addEventListener('click', () => {
+    if (isCurrentPeriod()) return;
+    moAt = moMode === 'year' ? new Date(moAt.getFullYear() + 1, 0, 1) : new Date(moAt.getFullYear(), moAt.getMonth() + 1, 1);
+    renderMoney();
+  });
+  $('mo-mode').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    moMode = b.dataset.v;
+    const now = new Date();
+    if (moMode === 'month' && moAt.getFullYear() === now.getFullYear()) moAt = new Date(now.getFullYear(), now.getMonth(), 1);
+    try { localStorage.setItem('fa.moMode', moMode); } catch (err) {}
+    renderMoney();
+  });
+
+  // add / edit an expense (CO-03, CO-05)
+  let exEditing = null;
+  function openExpense(catId, id) {
+    const e = id && expenses.get(id);
+    exEditing = e ? e.id : null;
+    const cid = e ? e.category_id : catId;
+    const c = cats.get(cid);
+    $('ex-title').textContent = e ? 'Modifica spesa' : `${c ? c.icon + ' ' + c.name : 'Nuova spesa'}`;
+    $('ex-cat').replaceChildren(...catList(true).filter((x) => !x.hidden || x.id === cid)
+      .map((x) => Object.assign(document.createElement('option'), { value: x.id, textContent: `${x.icon} ${x.name}` })));
+    $('ex-cat').value = cid;
+    $('ex-amount').value = e ? (e.amount_cents / 100).toFixed(2).replace('.', ',') : '';
+    $('ex-note').value = e ? e.note || '' : '';
+    let day = isoDay(new Date());
+    if (!e && !isCurrentPeriod()) day = isoDay(moMode === 'year' ? new Date(moAt.getFullYear(), 11, 31) // a past period: its last day
+      : new Date(moAt.getFullYear(), moAt.getMonth() + 1, 0));
+    $('ex-date').value = e ? e.spent_on : day;
+    $('ex-delete').hidden = !e;
+    $('ex-err').hidden = true;
+    $('ex-dlg').showModal();
+    if (!e) setTimeout(() => $('ex-amount').focus(), 50);
+  }
+  const parseCents = (s) => {
+    const v = Number(String(s).trim().replace(/\s|€/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.'));
+    return Number.isFinite(v) ? Math.round(v * 100) : NaN;
+  };
+  $('ex-form').addEventListener('submit', (ev) => {
+    if (!ev.submitter || ev.submitter.value !== 'save') { exEditing = null; return; }
+    const cents = parseCents($('ex-amount').value);
+    if (!(cents > 0) || cents > 100000000) { ev.preventDefault(); $('ex-err').hidden = false; $('ex-amount').focus(); return; }
+    const f = { category_id: $('ex-cat').value, amount_cents: cents,
+      note: $('ex-note').value.trim().replace(/\s+/g, ' ') || null, spent_on: $('ex-date').value || isoDay(new Date()) };
+    const old = exEditing && expenses.get(exEditing);
+    if (old) {
+      const diff = {};
+      for (const k of Object.keys(f)) if (f[k] !== (old[k] ?? null)) diff[k] = f[k];
+      if (Object.keys(diff).length) setFields(old.id, diff, EXP);
+    } else {
+      const row = { id: crypto.randomUUID(), family_id: me.family_id, ...f, created_by: me.display_name,
+        created_at: new Date().toISOString() };
+      expenses.set(row.id, row);
+      queue.push({ op: 'add', t: EXP, id: row.id, row });
+      commit();
+    }
+    exEditing = null;
+  });
+  $('ex-delete').addEventListener('click', () => {
+    const e = expenses.get(exEditing);
+    if (!e || !confirm(`Eliminare la spesa di ${money(e.amount_cents)}?`)) return;
+    expenses.delete(e.id);
+    queue.push({ op: 'del', t: EXP, id: e.id });
+    exEditing = null;
+    $('ex-dlg').close('cancel');
+    commit();
+  });
+  $('mo-ring').addEventListener('click', (e) => {
+    const b = e.target.closest('.ring-icon');
+    if (b) openExpense(b.dataset.cat);
+  });
+
+  // one category's expenses in the period (CO-05)
+  let detailCat = null;
+  function renderCatDetail() {
+    const c = cats.get(detailCat);
+    if (!c) { $('cat-dlg').close(); return; }
+    const list = inPeriod().filter((e) => e.category_id === c.id)
+      .sort((a, b) => b.spent_on.localeCompare(a.spent_on) || (b.created_at || '').localeCompare(a.created_at || ''));
+    const tot = list.reduce((a, e) => a + e.amount_cents, 0);
+    $('cd-title').textContent = `${c.icon} ${c.name} · ${money(tot)}`;
+    $('cd-list').replaceChildren(...list.map((e) => {
+      const li2 = document.createElement('li');
+      li2.className = 'item ex-row';
+      li2.dataset.id = e.id;
+      li2.innerHTML = '<span class="ex-day"></span><span class="name"></span><span class="mo-amt"></span>';
+      li2.querySelector('.ex-day').textContent = new Date(e.spent_on + 'T12:00')
+        .toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+      li2.querySelector('.name').textContent = e.note || '—';
+      li2.querySelector('.mo-amt').textContent = money(e.amount_cents);
+      return li2;
+    }));
+    $('cd-empty').hidden = list.length > 0;
+  }
+  $('mo-list').addEventListener('click', (e) => {
+    const r = e.target.closest('.mo-row');
+    if (!r) return;
+    detailCat = r.dataset.cat;
+    renderCatDetail();
+    $('cat-dlg').showModal();
+  });
+  $('cd-list').addEventListener('click', (e) => {
+    const r = e.target.closest('.ex-row');
+    if (r) openExpense(null, r.dataset.id);
+  });
+  $('cd-add').addEventListener('click', () => openExpense(detailCat));
+
+  // categories (CO-07)
+  function renderCats() {
+    const used = new Set([...expenses.values()].map((e) => e.category_id));
+    const list = catList(true);
+    $('cats-list').replaceChildren(...list.map((c, i) => {
+      const li2 = document.createElement('li');
+      li2.dataset.id = c.id;
+      li2.className = c.hidden ? 'off' : '';
+      li2.innerHTML = '<button type="button" class="ci" aria-label="Cambia icona"></button>'
+        + '<input class="cn" aria-label="Nome"><input type="color" class="cc" aria-label="Colore">'
+        + '<button type="button" class="ghost mv" data-d="-1" aria-label="Su">↑</button>'
+        + '<button type="button" class="ghost mv" data-d="1" aria-label="Giù">↓</button>'
+        + '<button type="button" class="ghost hd"></button>';
+      li2.querySelector('.ci').textContent = c.icon;
+      li2.querySelector('.ci').style.borderColor = c.color;
+      li2.querySelector('.cn').value = c.name;
+      li2.querySelector('.cc').value = c.color;
+      li2.querySelector('[data-d="-1"]').disabled = i === 0;
+      li2.querySelector('[data-d="1"]').disabled = i === list.length - 1;
+      const hd = li2.querySelector('.hd');
+      if (used.has(c.id)) { hd.textContent = c.hidden ? 'Mostra' : 'Nascondi'; hd.dataset.act = 'hide'; }
+      else { hd.textContent = 'Elimina'; hd.dataset.act = 'del'; hd.classList.add('danger'); }
+      return li2;
+    }));
+  }
+  $('mo-cats').addEventListener('click', () => { renderCats(); $('cats-dlg').showModal(); });
+  $('cats-list').addEventListener('click', (e) => {
+    const li2 = e.target.closest('li');
+    const c = li2 && cats.get(li2.dataset.id);
+    if (!c) return;
+    if (e.target.closest('.ci')) {
+      const v = prompt(`Icona per "${c.name}" (un'emoji):`, c.icon);
+      if (v && v.trim() && v.trim() !== c.icon) setFields(c.id, { icon: [...v.trim()].slice(0, 4).join('') }, CATS);
+    } else if (e.target.closest('.mv')) {
+      const list = catList(true), i = list.indexOf(c), j = i + Number(e.target.closest('.mv').dataset.d);
+      if (j < 0 || j >= list.length) return;
+      list.forEach((x, k) => { if (x.position !== k + 1) setFields(x.id, { position: k + 1 }, CATS); }); // tidy 1..n
+      const o = list[j];
+      setFields(c.id, { position: j + 1 }, CATS);
+      setFields(o.id, { position: i + 1 }, CATS);
+    } else if (e.target.closest('.hd')) {
+      if (e.target.closest('.hd').dataset.act === 'hide') setFields(c.id, { hidden: !c.hidden }, CATS);
+      else if (confirm(`Eliminare la categoria "${c.name}"?`)) {
+        cats.delete(c.id);
+        queue.push({ op: 'del', t: CATS, id: c.id });
+        commit();
+      }
+    } else return;
+    renderCats();
+  });
+  $('cats-list').addEventListener('change', (e) => {
+    const li2 = e.target.closest('li');
+    const c = li2 && cats.get(li2.dataset.id);
+    if (!c) return;
+    if (e.target.classList.contains('cn')) {
+      const v = e.target.value.trim().replace(/\s+/g, ' ');
+      if (v && v !== c.name) setFields(c.id, { name: v }, CATS); else e.target.value = c.name;
+    } else if (e.target.classList.contains('cc') && /^#[0-9a-f]{6}$/i.test(e.target.value)) {
+      setFields(c.id, { color: e.target.value }, CATS);
+      renderCats();
+    }
+  });
+  $('cats-add').addEventListener('click', () => {
+    const name = (prompt('Nome della nuova categoria:') || '').trim().replace(/\s+/g, ' ');
+    if (!name) return;
+    const list = catList(true);
+    const row = { id: crypto.randomUUID(), family_id: me.family_id, name, icon: '💶',
+      color: PALETTE[list.length % PALETTE.length], position: (list.length ? Math.max(...list.map((x) => x.position)) : 0) + 1,
+      hidden: false };
+    cats.set(row.id, row);
+    queue.push({ op: 'add', t: CATS, id: row.id, row });
+    commit();
+    renderCats();
+  });
+
+  // export for Excel (CO-08): semicolons and decimal commas, as Italian Excel expects
+  $('mo-export').addEventListener('click', () => {
+    const q = (s) => `"${String(s ?? '').replace(/"/g, '""')}"`;
+    const lines = [['Data', 'Categoria', 'Importo', 'Nota', 'Inserita da'].join(';')];
+    for (const e of [...expenses.values()].sort((a, b) => a.spent_on.localeCompare(b.spent_on))) {
+      const c = cats.get(e.category_id);
+      const [y, m, d] = e.spent_on.split('-');
+      lines.push([`${d}/${m}/${y}`, q(c ? c.name : '?'), (e.amount_cents / 100).toFixed(2).replace('.', ','),
+        q(e.note), q(e.created_by)].join(';'));
+    }
+    const blob = new Blob(['﻿' + lines.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' });
+    const a = Object.assign(document.createElement('a'),
+      { href: URL.createObjectURL(blob), download: `spese-familyapp-${isoDay(new Date())}.csv` });
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  });
+
   // ---------- notifications (NT-01…NT-06) ----------
   const pushOk = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
   const NT_DEFAULT = { shop: 'none', todo: 'mine', morning: true };
@@ -574,7 +896,7 @@
   function renderInvite() { // NT-01
     let no = false;
     try { no = localStorage.getItem('fa.ntInvite') === 'no'; } catch (e) {}
-    $('nt-invite').hidden = !(permission() === 'default' && !no && ['list', 'todo'].includes(view));
+    $('nt-invite').hidden = !(permission() === 'default' && !no && ['list', 'todo', 'money'].includes(view));
   }
   $('nt-invite-yes').addEventListener('click', async () => {
     const ok = await pushRegister(true);
@@ -633,18 +955,18 @@
   });
   if (pushOk) navigator.serviceWorker.addEventListener('message', (e) => { // NT-06, app already open
     const tab = e.data && e.data.tab;
-    if (me && ['list', 'todo'].includes(tab)) { show(tab); try { localStorage.setItem('fa.tab', tab); } catch (err) {} }
+    if (me && ['list', 'todo', 'money'].includes(tab)) { show(tab); try { localStorage.setItem('fa.tab', tab); } catch (err) {} }
   });
 
   // ---------- start (SP-01) ----------
   function show(v) {
     view = v;
-    for (const s of ['login', 'denied', 'list', 'todo']) $(s).hidden = s !== v;
+    for (const s of ['login', 'denied', 'list', 'todo', 'money']) $(s).hidden = s !== v;
     $('flyers-btn').hidden = v !== 'list';
     $('logout-btn').hidden = v === 'login';
-    $('settings-btn').hidden = !['list', 'todo'].includes(v);
+    $('settings-btn').hidden = !['list', 'todo', 'money'].includes(v);
     renderInvite();
-    $('tabs').hidden = !['list', 'todo'].includes(view);
+    $('tabs').hidden = !['list', 'todo', 'money'].includes(view);
     document.body.classList.toggle('has-tabs', !$('tabs').hidden);
     for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === view);
   }
@@ -671,9 +993,9 @@
     $('tagline').hidden = !me.tagline;
     loadLocal();
     let tab = 'list';
-    try { tab = localStorage.getItem('fa.tab') === 'todo' ? 'todo' : 'list'; } catch (e) {}
+    try { const saved = localStorage.getItem('fa.tab'); tab = ['todo', 'money'].includes(saved) ? saved : 'list'; } catch (e) {}
     const asked = new URLSearchParams(location.search).get('tab'); // NT-06: opened from a notification
-    if (['list', 'todo'].includes(asked)) {
+    if (['list', 'todo', 'money'].includes(asked)) {
       tab = asked;
       try { localStorage.setItem('fa.tab', tab); } catch (e) {}
       history.replaceState(null, '', location.pathname);

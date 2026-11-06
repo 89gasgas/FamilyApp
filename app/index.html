@@ -82,6 +82,25 @@
       <ul id="td-done" class="items tasks done"></ul>
     </section>
 
+    <section id="money" hidden>
+      <div class="period">
+        <button type="button" id="mo-prev" class="ghost arrow" aria-label="Periodo precedente">‹</button>
+        <span id="mo-label"></span>
+        <button type="button" id="mo-next" class="ghost arrow" aria-label="Periodo successivo">›</button>
+        <span class="seg mini" id="mo-mode"><button type="button" data-v="month">Mese</button><button type="button" data-v="year">Anno</button></span>
+      </div>
+      <div id="mo-ring" class="ring">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><g id="mo-donut" transform="rotate(-90 50 50)"></g></svg>
+        <div class="ring-center"><b id="mo-total"></b><small id="mo-sub"></small></div>
+      </div>
+      <p class="hint center">Tocca un'icona per aggiungere una spesa</p>
+      <ul id="mo-list" class="items"></ul>
+      <p class="mo-tools">
+        <button type="button" id="mo-cats" class="ghost small">✏️ Categorie</button>
+        <button type="button" id="mo-export" class="ghost small">⬇️ Esporta per Excel</button>
+      </p>
+    </section>
+
     <p class="foot">
       <button id="settings-btn" class="ghost small" hidden>⚙️ Impostazioni</button>
       <button id="logout-btn" class="ghost small" hidden>Esci dall'account</button>
@@ -91,6 +110,7 @@
   <nav id="tabs" class="tabs" hidden>
     <button type="button" data-tab="list" class="tab">🛒<span>Spesa</span></button>
     <button type="button" data-tab="todo" class="tab">✓<span>Da fare</span><b id="td-badge" class="badge" hidden></b></button>
+    <button type="button" data-tab="money" class="tab">💶<span>Spese</span></button>
   </nav>
 
   <dialog id="td-edit">
@@ -106,6 +126,45 @@
         <button value="save" class="primary">Salva</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="ex-dlg">
+    <form method="dialog" id="ex-form" class="vform">
+      <h2 id="ex-title">Nuova spesa</h2>
+      <label>Importo (€)<input id="ex-amount" class="big-amount" inputmode="decimal" autocomplete="off" placeholder="0,00" required></label>
+      <label>Categoria<select id="ex-cat"></select></label>
+      <label>Nota<input id="ex-note" placeholder="facoltativa" autocomplete="off"></label>
+      <label>Data<input type="date" id="ex-date" required></label>
+      <p id="ex-err" class="hint danger" hidden>Scrivi un importo maggiore di zero.</p>
+      <div class="dlg-actions">
+        <button type="button" id="ex-delete" class="ghost danger">Elimina</button>
+        <span></span>
+        <button value="cancel" formnovalidate class="ghost">Annulla</button>
+        <button value="save" class="primary">Salva</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="cat-dlg">
+    <h2 id="cd-title"></h2>
+    <ul id="cd-list" class="items ex-list"></ul>
+    <p id="cd-empty" class="hint">Nessuna spesa in questo periodo.</p>
+    <div class="dlg-actions">
+      <button type="button" id="cd-add" class="ghost">+ Aggiungi</button>
+      <span></span>
+      <form method="dialog"><button class="primary">Chiudi</button></form>
+    </div>
+  </dialog>
+
+  <dialog id="cats-dlg">
+    <h2>Categorie</h2>
+    <p class="hint">Tocca l'icona o il nome per cambiarli. Le categorie con spese si possono solo nascondere.</p>
+    <ul id="cats-list" class="cats-list"></ul>
+    <div class="dlg-actions">
+      <button type="button" id="cats-add" class="ghost">+ Nuova categoria</button>
+      <span></span>
+      <form method="dialog"><button class="primary">Fatto</button></form>
+    </div>
   </dialog>
 
   <dialog id="settings">

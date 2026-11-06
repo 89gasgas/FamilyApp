@@ -6,8 +6,8 @@ Usage:
 Without --apply it only compares backup and database (nothing is changed).
 With --apply, in a single transaction:
   - the family and its members are re-created if missing (members are never deleted);
-  - the family's shopping items and to-dos are replaced by the backup's
-    (to-dos are left untouched if the backup has none saved).
+  - the family's shopping items, to-dos, expense categories and expenses are replaced by the backup's
+    (tables the backup has not saved yet, like to-dos in early backups, are left untouched).
 Before changing anything, the family's current data is saved to
 backups/prima-del-ripristino-<ora>.json (not committed). Never prints keys.
 """
@@ -26,7 +26,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 FAMILIES = {"prova": "00000000-0000-0000-0000-0000000000f1",
             "reale": "496e6cf0-7604-4405-8efb-62ec3ed42aa4"}
-DATA_TABLES = ("shopping_items", "tasks")   # replaced wholesale for the family
+DATA_TABLES = ("shopping_items", "tasks", "expense_categories", "expenses")  # replaced wholesale, in FK order
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--family", required=True)
@@ -113,7 +113,7 @@ print("\nCopia dei dati attuali:", os.path.relpath(snap_path, S.ROOT))
 cols = {}
 for r in sql("select table_name, column_name from information_schema.columns "
              "where table_schema = 'public' and is_generated = 'NEVER' "
-             "and table_name in ('families','members','shopping_items','tasks')"):
+             "and table_name in ('families','members','shopping_items','tasks','expense_categories','expenses')"):
     cols.setdefault(r["table_name"], []).append(r["column_name"])
 
 
@@ -128,10 +128,12 @@ stmts = ["begin;",
          insert("families", [family_row], "on conflict (id) do nothing")]
 if mine.get("members"):
     stmts.append(insert("members", mine["members"], "on conflict do nothing"))
-for t in DATA_TABLES:
-    if t not in data:
-        continue
+saved = [t for t in DATA_TABLES if t in data]
+if "expense_categories" in saved and "expenses" not in saved:
+    saved.remove("expense_categories")   # never drop categories that current expenses point to
+for t in reversed(saved):
     stmts.append(f"delete from public.{t} where family_id = '{fam}';")
+for t in saved:
     if mine[t]:
         stmts.append(insert(t, mine[t], ""))
 stmts.append("commit;")
