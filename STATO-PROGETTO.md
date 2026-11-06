@@ -74,7 +74,7 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 - [x] **Famiglia reale creata** (`supabase/002_famiglia_reale.sql`): "Famiglia" con GaS (89gasgas@gmail.com) e Chips (valesposito818@gmail.com).
   - ⚠️ **Sorpresa per Chips:** GaS non vuole che Chips riceva messaggi o inviti. Non inviare nulla a Chips finché GaS non lo dice.
 - [ ] Non ancora fatti: controllo giornaliero anti-pausa Supabase e backup giornaliero (GitHub Actions); eliminazione di un prodotto (non prevista dalle user story).
-- [ ] Lista iniziale della spesa (in ordine di supermercato) da ricevere da GaS
+- [x] **Lista iniziale caricata (6 nov 2026)** con `supabase/003_lista_iniziale.sql`: 317 prodotti nell'ordine del supermercato di GaS, 12 da comprare e 305 comprati. I 12 da comprare sono stati messi vicino a prodotti simili (stima di Claude, si possono trascinare). Il doppione "Cipollotti" è stato saltato. Nomi lasciati come scritti da GaS, comprese parentesi e asterischi.
 - [ ] Icona dell'app (facoltativa)
 - [ ] Rilettura delle user story da parte di Chips
 
