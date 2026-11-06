@@ -38,9 +38,9 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 1. Fondamenta + lista della spesa condivisa (user story SP-01…SP-09 nel documento) ✅
 2. To-do condivise (TD-01…TD-07) ✅
 3. Notifiche (NT-01…NT-06) ✅ (collaudate da GaS; manca la prova con Chips)
-4. Calendario (integrazione Google Calendar)
+4. Calendario e ricorrenze, fatto in casa senza Google (CA-01…CA-09 in bozza nel documento, da approvare). Decisioni di GaS: viste Agenda + Mese, solo giorno e titolo, promemoria scelto per evento, le cose di Da fare con data compaiono nel calendario
 5. Spese del mese (CO-01…CO-08, solo uscite, stile Monefy) ✅ pubblicate, da collaudare dal telefono
-6. Ricorrenze e promemoria
+6. ~~Ricorrenze e promemoria~~ (unite al Calendario)
 7. Liste libere (film, libri…)
 8. Archivio documenti
 9. Miglioramenti
