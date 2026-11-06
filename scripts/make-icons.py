@@ -1,4 +1,4 @@
-"""Draw the app icon (a white basket on green) as PNG, no external libraries."""
+"""Draw the app icon (a white house with a heart, on green) as PNG, no external libraries."""
 import os
 import struct
 import zlib
@@ -7,26 +7,24 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GREEN, WHITE = (47, 125, 91), (255, 255, 255)
 
 
+def heart(x, y, cx=0.5, cy=0.605, s=0.098):
+    X, Y = (x - cx) / s, -(y - cy) / s
+    return (X * X + Y * Y - 1) ** 3 - X * X * Y ** 3 <= 0
+
+
 def inside(x, y):
     """Shape in unit coordinates (0..1). Icon is maskable: keep art in the centre 60%."""
-    # handle: ring segment above the basket
-    cx, cy, r, w = 0.5, 0.47, 0.17, 0.035
-    d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
-    if y < cy and abs(d - r) < w:
+    if heart(x, y):
+        return False  # heart cut out of the house
+    # roof: triangle from the apex down to the eaves
+    apex, eaves = 0.23, 0.49
+    if apex <= y <= eaves and abs(x - 0.5) <= 0.30 * (y - apex) / (eaves - apex):
         return True
-    # basket body: trapezoid
-    top, bot = 0.47, 0.72
-    if top <= y <= bot:
-        t = (y - top) / (bot - top)
-        half = 0.25 - 0.06 * t
-        if abs(x - 0.5) <= half:
-            # three vertical slots
-            for sx in (0.4, 0.5, 0.6):
-                if abs(x - sx) < 0.022 and top + 0.06 < y < bot - 0.05:
-                    return False
-            return True
-    # rim
-    return 0.43 <= y < 0.47 and abs(x - 0.5) <= 0.28
+    # chimney
+    if 0.62 <= x <= 0.68 and 0.29 <= y <= 0.42:
+        return True
+    # walls
+    return 0.29 <= x <= 0.71 and 0.48 <= y <= 0.77
 
 
 def png(size, path):
