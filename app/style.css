@@ -129,7 +129,7 @@ dialog #td-edit-form { text-align: left; margin-top: 0; }
 #settings { max-height: 88vh; overflow-y: auto; }
 #settings h3 { margin: 18px 0 6px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 16px; }
 #settings h2 + div > h3, #settings h2 + h3 { border-top: 0; padding-top: 0; margin-top: 4px; }
-#settings > button.ghost, #st-notify > button.ghost { padding-left: 0; }
+#settings > button.ghost, #settings > div > button.ghost { padding-left: 0; }
 .st-line { margin: 4px 0; }
 #settings .lvl-title { margin: 14px 0 6px; font-weight: 600; font-size: 15px; }
 .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
@@ -168,7 +168,7 @@ dialog #td-edit-form { text-align: left; margin-top: 0; }
 .mo-row .name { padding-left: 10px; }
 .mo-pct { color: var(--muted); font-size: 13px; padding: 0 8px; }
 .mo-amt { padding-right: 12px; font-weight: 600; white-space: nowrap; }
-.mo-tools { display: flex; justify-content: space-between; margin: 10px 0 0; }
+.mo-tools { display: flex; justify-content: center; margin: 10px 0 0; }
 .vform { display: flex; flex-direction: column; gap: 12px; text-align: left; margin-top: 0; }
 dialog .vform { text-align: left; margin-top: 0; }
 .vform label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }

@@ -927,7 +927,7 @@
   function openSettings() {
     $('nt-hint').textContent = '';
     $('st-update-hint').textContent = '';
-    $('st-notify').hidden = !me; // "denied" view: only account and app
+    $('st-notify').hidden = $('st-money').hidden = !me; // "denied" view: only account and app
     $('st-who').textContent = me ? `${me.display_name} · ${me.email}` : (authEmail || '');
     const v = window.FA_VERSION;
     $('st-version').textContent = v && v !== 'sviluppo' ? `Versione del ${v}` : 'Versione di sviluppo (PC)';
