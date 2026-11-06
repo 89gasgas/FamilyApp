@@ -41,21 +41,36 @@
     const el = document.createElement('li');
     el.className = 'item';
     el.dataset.id = item.id;
+    if (item.optional) el.classList.add('opt');
     const name = document.createElement('span');
     name.className = 'name';
     name.textContent = item.name;
+    const tag = document.createElement('button'); // SP-08: tap to switch "se in offerta"
+    tag.className = 'tag';
+    tag.type = 'button';
+    tag.textContent = '🏷️';
+    tag.setAttribute('aria-pressed', item.optional ? 'true' : 'false');
+    tag.setAttribute('aria-label', 'Se in offerta');
+    tag.title = item.optional ? 'Se in offerta (tocca per renderlo urgente)' : 'Tocca per segnarlo "se in offerta"';
     const handle = document.createElement('span');
     handle.className = 'handle';
     handle.textContent = '≡';
     handle.setAttribute('aria-label', 'Sposta');
-    el.append(name, handle);
+    el.append(name, tag, handle);
     return el;
   }
+  let urgentOnly = false;
+  try { urgentOnly = localStorage.getItem('fa.urgentOnly') === '1'; } catch (e) {}
   function render() {
-    const act = sorted(false), bou = sorted(true);
+    const all = sorted(false), bou = sorted(true);
+    const nOpt = all.filter((i) => i.optional).length, nUrg = all.length - nOpt;
+    const act = urgentOnly ? all.filter((i) => !i.optional) : all;
     $('active').replaceChildren(...act.map(li));
     $('bought').replaceChildren(...bou.map(li));
     $('empty').hidden = act.length > 0;
+    $('empty').textContent = all.length ? 'Niente di urgente.' : 'Niente da comprare.';
+    $('count').textContent = `${nUrg} da comprare` + (nOpt ? ` + ${nOpt} se in offerta` : '');
+    $('urgent-only').checked = urgentOnly;
     $('bought-title').hidden = bou.length === 0;
     renderSync();
   }
@@ -82,12 +97,18 @@
   }
   function commit() { save(); render(); flush(); }
 
-  function addProduct(text) {
+  function addProduct(raw) {
+    const optional = /\?\s*$/.test(raw); // SP-08: "Olive?" = se in offerta
+    const text = raw.replace(/[\s?]+$/, '');
     const key = norm(text);
     if (!key) return;
     const existing = [...items.values()].find((i) => norm(i.name) === key);
     if (existing) {
-      if (existing.bought) setFields(existing.id, { bought: false, bought_by: null, bought_at: null }); // SP-05
+      const f = {};
+      if (existing.bought) Object.assign(f, { bought: false, bought_by: null, bought_at: null }); // SP-05
+      if (optional && !existing.optional) f.optional = true;
+      if (Object.keys(f).length) setFields(existing.id, f);
+      if (urgentOnly && existing.optional) { urgentOnly = false; render(); }
       flash(existing.id); // SP-02: no duplicate
       return;
     }
@@ -95,9 +116,11 @@
     const it = {
       id: crypto.randomUUID(), family_id: me.family_id, name: text.trim().replace(/\s+/g, ' '),
       position: max + 1, bought: false, added_by: me.display_name, added_at: new Date().toISOString(),
+      optional,
     };
     items.set(it.id, it);
-    queue.push({ op: 'add', id: it.id, name: it.name, position: it.position });
+    queue.push({ op: 'add', id: it.id, name: it.name, position: it.position, optional });
+    if (urgentOnly && optional) urgentOnly = false;
     commit();
     flash(it.id);
   }
@@ -138,7 +161,8 @@
         let res;
         try {
           if (op.op === 'add') {
-            res = await sb.rpc('add_item', { p_id: op.id, p_name: op.name, p_position: op.position });
+            res = await sb.rpc('add_item', { p_id: op.id, p_name: op.name, p_position: op.position,
+                                             p_optional: !!op.optional });
           } else {
             res = await sb.from('shopping_items').update(op.fields).eq('id', op.id).select();
           }
@@ -227,8 +251,19 @@
     $('add-input').focus();
   });
   document.addEventListener('click', (e) => {
+    const t = e.target.closest('.item .tag');
+    if (t) {
+      const it = items.get(t.parentElement.dataset.id);
+      if (it) setFields(it.id, { optional: !it.optional });
+      return;
+    }
     const n = e.target.closest('.item .name');
     if (n) toggle(n.parentElement.dataset.id);
+  });
+  $('urgent-only').addEventListener('change', (e) => {
+    urgentOnly = e.target.checked;
+    try { localStorage.setItem('fa.urgentOnly', urgentOnly ? '1' : '0'); } catch (err) {}
+    render();
   });
   $('flyers-btn').addEventListener('click', () => $('flyers').showModal()); // SP-07
   $('google-btn').addEventListener('click', () =>

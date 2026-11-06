@@ -38,6 +38,19 @@ button { font: inherit; border: 0; border-radius: 10px; cursor: pointer; }
 .item.flash { animation: flash .9s ease; }
 @keyframes flash { 0%,100% { background: var(--card); } 30% { background: color-mix(in srgb, var(--accent) 25%, var(--card)); } }
 .item.dragging { opacity: .85; box-shadow: 0 6px 20px rgba(0,0,0,.18); position: relative; z-index: 3; }
+.item .tag { background: none; padding: 10px 6px; font-size: 20px; line-height: 1;
+  filter: grayscale(1); opacity: .25; }
+.item.opt .tag { filter: none; opacity: 1; }
+.item.opt .name { color: var(--muted); font-style: italic; }
+.tools { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 0 4px 10px; font-size: 14px; color: var(--muted); }
+.switch { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ink); }
+.switch input { appearance: none; -webkit-appearance: none; width: 40px; height: 24px; margin: 0;
+  border-radius: 12px; background: var(--line); position: relative; cursor: pointer; transition: background .15s; }
+.switch input::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+  border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.switch input:checked { background: var(--accent); }
+.switch input:checked::after { transform: translateX(16px); }
 .bought .item .name { color: var(--muted); text-decoration: line-through; opacity: .7; }
 h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 24px 4px 8px; }
 dialog { border: 0; border-radius: 16px; padding: 20px; background: var(--card); color: var(--ink); width: min(92vw, 400px); }
