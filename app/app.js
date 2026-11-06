@@ -1,4 +1,4 @@
-/* FamilyApp: shared shopping list (SP-01…SP-09) and to-dos (TD-01…TD-07). */
+/* FamilyApp: shared shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06). */
 (() => {
   'use strict';
   // If the Supabase library failed to load (interrupted download), reload once instead of a blank page.
@@ -349,7 +349,7 @@
   $('flyers-btn').addEventListener('click', () => $('flyers').showModal()); // SP-07
   $('google-btn').addEventListener('click', () =>
     sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } }));
-  $('logout-btn').addEventListener('click', async () => { await sb.auth.signOut(); location.reload(); });
+  $('logout-btn').addEventListener('click', async () => { await pushForget(); await sb.auth.signOut(); location.reload(); });
   if (isLocal) {
     $('dev-login').hidden = false;
     $('dev-login').addEventListener('click', async (e) => {
@@ -536,11 +536,114 @@
     } else openEdit(t.id);
   });
 
+  // ---------- notifications (NT-01…NT-06) ----------
+  const pushOk = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  const NT_DEFAULT = { shop: 'none', todo: 'mine', morning: true };
+  const b64uBytes = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)),
+    (c) => c.charCodeAt(0));
+  const permission = () => (pushOk ? Notification.permission : 'unsupported');
+  const notifyPrefs = () => ({ ...NT_DEFAULT, ...((me && me.notify) || {}) });
+  let view = null;
+
+  async function pushRegister(ask) { // registers this phone for my account; true when it worked
+    if (!pushOk) return false;
+    if (Notification.permission === 'default' && ask) await Notification.requestPermission();
+    if (Notification.permission !== 'granted') return false;
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        const { data: key, error } = await sb.rpc('push_public_key');
+        if (error || !key) throw error || new Error('no key');
+        sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uBytes(key) });
+      }
+      const j = sub.toJSON();
+      const { error } = await sb.rpc('push_subscribe', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+      if (error) throw error;
+      return true;
+    } catch (e) { console.warn('push', e); return false; }
+  }
+  async function pushForget() { // logout: this phone stops receiving this account's notifications
+    try {
+      const reg = pushOk && await navigator.serviceWorker.getRegistration();
+      const sub = reg && await reg.pushManager.getSubscription();
+      if (sub) { await sb.rpc('push_unsubscribe', { p_endpoint: sub.endpoint }); await sub.unsubscribe(); }
+    } catch (e) {}
+  }
+
+  function renderInvite() { // NT-01
+    let no = false;
+    try { no = localStorage.getItem('fa.ntInvite') === 'no'; } catch (e) {}
+    $('nt-invite').hidden = !(permission() === 'default' && !no && ['list', 'todo'].includes(view));
+  }
+  $('nt-invite-yes').addEventListener('click', async () => {
+    const ok = await pushRegister(true);
+    renderInvite();
+    if (ok) openSettings();
+  });
+  $('nt-invite-no').addEventListener('click', () => {
+    try { localStorage.setItem('fa.ntInvite', 'no'); } catch (e) {}
+    renderInvite();
+  });
+
+  function renderSettings() { // NT-02
+    const p = notifyPrefs(), perm = permission();
+    for (const seg of document.querySelectorAll('#settings .seg'))
+      for (const b of seg.children) b.classList.toggle('on', b.dataset.v === p[seg.dataset.key]);
+    $('nt-morning').checked = !!p.morning;
+    $('nt-status').textContent = {
+      granted: 'Attive su questo telefono. Scegli cosa ricevere:',
+      default: 'Non ancora attive su questo telefono.',
+      denied: "Bloccate su questo telefono. Per sbloccarle: tieni premuta l'icona dell'app → Informazioni app → Notifiche.",
+      unsupported: 'Questo browser non supporta le notifiche.',
+    }[perm];
+    $('nt-enable').hidden = perm !== 'default';
+    $('nt-levels').classList.toggle('off', perm !== 'granted');
+    $('nt-test').hidden = perm !== 'granted';
+  }
+  function openSettings() {
+    $('nt-hint').textContent = '';
+    renderSettings();
+    if (!$('settings').open) $('settings').showModal();
+  }
+  async function saveNotify(patch) {
+    const before = me.notify;
+    me.notify = { ...notifyPrefs(), ...patch };
+    renderSettings();
+    const { data, error } = await sb.rpc('set_notify', { p: patch });
+    if (error) { me.notify = before; renderSettings(); }
+    else { me.notify = data; try { localStorage.setItem('fa.me.' + me.email, JSON.stringify(me)); } catch (e) {} }
+    $('nt-hint').textContent = error ? 'Non salvato: serve la connessione. Riprova.' : 'Salvato.';
+  }
+  $('settings-btn').addEventListener('click', openSettings);
+  $('nt-enable').addEventListener('click', async () => {
+    const ok = await pushRegister(true);
+    renderSettings(); renderInvite();
+    if (!ok && permission() === 'granted') $('nt-hint').textContent = 'Non riuscito: serve la connessione. Riprova.';
+  });
+  $('settings').addEventListener('click', (e) => {
+    const b = e.target.closest('.seg button');
+    if (b) saveNotify({ [b.parentElement.dataset.key]: b.dataset.v });
+  });
+  $('nt-morning').addEventListener('change', (e) => saveNotify({ morning: e.target.checked }));
+  $('nt-test').addEventListener('click', async () => {
+    await pushRegister(false);
+    const { error } = await sb.rpc('push_test');
+    $('nt-hint').textContent = error ? 'Non inviata: serve la connessione.' : 'Inviata: arriva tra pochi secondi.';
+  });
+  if (pushOk) navigator.serviceWorker.addEventListener('message', (e) => { // NT-06, app already open
+    const tab = e.data && e.data.tab;
+    if (me && ['list', 'todo'].includes(tab)) { show(tab); try { localStorage.setItem('fa.tab', tab); } catch (err) {} }
+  });
+
   // ---------- start (SP-01) ----------
-  function show(view) {
-    for (const v of ['login', 'denied', 'list', 'todo']) $(v).hidden = v !== view;
-    $('flyers-btn').hidden = view !== 'list';
-    $('logout-btn').hidden = view === 'login';
+  function show(v) {
+    view = v;
+    for (const s of ['login', 'denied', 'list', 'todo']) $(s).hidden = s !== v;
+    $('flyers-btn').hidden = v !== 'list';
+    $('logout-btn').hidden = v === 'login';
+    $('settings-btn').hidden = !['list', 'todo'].includes(v);
+    renderInvite();
     $('tabs').hidden = !['list', 'todo'].includes(view);
     document.body.classList.toggle('has-tabs', !$('tabs').hidden);
     for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === view);
@@ -548,7 +651,7 @@
 
   async function membership(email) {
     const cacheKey = 'fa.me.' + email;
-    const { data, error } = await sb.from('members').select('email,family_id,display_name,tagline').eq('email', email);
+    const { data, error } = await sb.from('members').select('email,family_id,display_name,tagline,notify').eq('email', email);
     if (!error) {
       const row = data[0] || null;
       if (row) localStorage.setItem(cacheKey, JSON.stringify(row)); else localStorage.removeItem(cacheKey);
@@ -569,11 +672,18 @@
     loadLocal();
     let tab = 'list';
     try { tab = localStorage.getItem('fa.tab') === 'todo' ? 'todo' : 'list'; } catch (e) {}
+    const asked = new URLSearchParams(location.search).get('tab'); // NT-06: opened from a notification
+    if (['list', 'todo'].includes(asked)) {
+      tab = asked;
+      try { localStorage.setItem('fa.tab', tab); } catch (e) {}
+      history.replaceState(null, '', location.pathname);
+    }
     show(tab); // TD-01: last tab used
     render();
     subscribe();
     flush();
     fetchAll();
+    pushRegister(false); // keeps this phone registered (the address can change over time)
   }
 
   window.FA = { items: () => [...items.values()], tasks: () => [...tasks.values()], queue: () => queue, flush, fetchAll };

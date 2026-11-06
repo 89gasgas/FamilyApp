@@ -120,3 +120,20 @@ body.has-tabs main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 .danger { color: var(--warn); }
 dialog #td-edit-form { text-align: left; margin-top: 0; }
 .foot { text-align: center; margin: 28px 0 0; }
+
+/* ---------- notifications (NT) ---------- */
+.invite { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 0 8px; padding: 8px 10px;
+  border-radius: 12px; background: color-mix(in srgb, var(--accent) 12%, var(--card)); font-size: 15px; }
+.invite span { flex: 1; min-width: 150px; }
+.invite .primary { padding: 6px 12px; }
+#settings .lvl-title { margin: 14px 0 6px; font-weight: 600; font-size: 15px; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg button { flex: 1; background: var(--bg); color: var(--ink); border-radius: 0; padding: 8px 4px; font-size: 14px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.lvl-switch { margin-top: 16px; font-size: 15px; }
+.lvl-hint { min-height: 1.4em; margin: 10px 0 0; }
+#settings .dlg-actions { margin-top: 12px; }
+#settings .dlg-actions form { margin: 0; }
+#nt-levels.off { opacity: .45; }
+.invite[hidden] { display: none; }

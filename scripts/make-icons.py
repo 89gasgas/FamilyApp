@@ -47,6 +47,26 @@ def png(size, path):
     open(path, "wb").write(data)
 
 
+def badge(size, path):
+    """Notification badge: white house on transparent, enlarged (Android shows it tiny and one-colour)."""
+    ss, z = 4, 0.62
+    rows = []
+    for py in range(size):
+        row = bytearray([0])
+        for px in range(size):
+            hits = sum(inside(0.5 + ((px + (i + .5) / ss) / size - 0.5) * z, 0.5 + ((py + (j + .5) / ss) / size - 0.5) * z)
+                       for i in range(ss) for j in range(ss))
+            row += bytes((255, 255, 255, round(255 * hits / (ss * ss))))
+        rows.append(bytes(row))
+
+    def chunk(t, d):
+        return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
+    sig = bytes([0x89]) + b"PNG" + bytes([13, 10, 26, 10])
+    data = sig + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 6, 0, 0, 0)) + chunk(b"IDAT", zlib.compress(b"".join(rows), 9)) + chunk(b"IEND", b"")
+    open(path, "wb").write(data)
+
+
 for n in (192, 512):
     png(n, os.path.join(ROOT, "app", "icons", f"icon-{n}.png"))
+badge(96, os.path.join(ROOT, "app", "icons", "badge-96.png"))
 print("icons ok")

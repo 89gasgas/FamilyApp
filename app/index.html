@@ -38,6 +38,12 @@
       <p>Questo account non fa parte della famiglia. Non ci sono dati da mostrare.</p>
     </section>
 
+    <div id="nt-invite" class="invite" hidden>
+      <span>🔔 Vuoi ricevere le notifiche?</span>
+      <button type="button" id="nt-invite-yes" class="primary">Attiva</button>
+      <button type="button" id="nt-invite-no" class="ghost">Non ora</button>
+    </div>
+
     <section id="list" hidden>
       <div class="add-wrap">
         <form id="add-form" autocomplete="off">
@@ -76,7 +82,10 @@
       <ul id="td-done" class="items tasks done"></ul>
     </section>
 
-    <p class="foot"><button id="logout-btn" class="ghost small" hidden>Esci dall'account</button></p>
+    <p class="foot">
+      <button id="settings-btn" class="ghost small" hidden>⚙️ Impostazioni</button>
+      <button id="logout-btn" class="ghost small" hidden>Esci dall'account</button>
+    </p>
   </main>
 
   <nav id="tabs" class="tabs" hidden>
@@ -97,6 +106,29 @@
         <button value="save" class="primary">Salva</button>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="settings">
+    <h2>Notifiche</h2>
+    <p id="nt-status" class="hint"></p>
+    <button type="button" id="nt-enable" class="primary" hidden>Attiva su questo telefono</button>
+    <div id="nt-levels">
+      <p class="lvl-title">🛒 Spesa</p>
+      <div class="seg" data-key="shop">
+        <button type="button" data-v="none">Nessuna</button><button type="button" data-v="urgent">Solo urgenti</button><button type="button" data-v="all">Tutte</button>
+      </div>
+      <p class="lvl-title">✓ Da fare</p>
+      <div class="seg" data-key="todo">
+        <button type="button" data-v="none">Nessuna</button><button type="button" data-v="mine">Solo per me</button><button type="button" data-v="all">Tutte</button>
+      </div>
+      <label class="switch lvl-switch"><input type="checkbox" id="nt-morning"><span>⏰ Promemoria del mattino (8:00)</span></label>
+      <p class="hint lvl-hint" id="nt-hint"></p>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" id="nt-test" class="ghost">Invia una prova</button>
+      <span></span>
+      <form method="dialog"><button class="primary">Chiudi</button></form>
+    </div>
   </dialog>
 
   <dialog id="flyers">
