@@ -70,8 +70,9 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
     | SP-06 | Trascinamento "pane" sopra "latte" resta dopo riapertura, su entrambi ✅; nuovi in fondo ✅ |
     | SP-07 | Pulsante Volantini con Lidl e Mercatò ✅; apertura diretta del negozio di Racconigi ❌ non ancora (link generici) |
   - Script: `scripts/deploy.py` (pubblica su Vercel), `scripts/git-push.py`, `scripts/sb-sql.py`, `scripts/sb-auth-config.py`, `scripts/dev-server.py` (http://localhost:5173, config in `.claude/launch.json`).
-- [ ] **BLOCCO APERTO: accesso con Google.** GaS deve creare il client OAuth su Google Cloud (gratis) e mettere `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` in `Segreti.txt`; poi Claude lancia `scripts/sb-auth-config.py`. URI di reindirizzamento da registrare: `https://tainzmzohihectvbqbyg.supabase.co/auth/v1/callback`; origine: `https://familyapp-gas.vercel.app`.
-- [ ] Indirizzi Gmail di GaS e Chips da inserire nella tabella `members` (famiglia reale da creare).
+- [x] **Accesso con Google configurato (6 nov 2026).** Client OAuth creato da GaS (progetto Google Cloud `FamilyApp`, modalità test con GaS e Chips come utenti di prova); chiavi in `Segreti.txt`; `scripts/sb-auth-config.py` → 200, Google abilitato. Verificato che Supabase rimanda a Google e Google mostra la pagina di accesso (client valido, nessun errore di redirect). Manca la prova reale di accesso di GaS dal telefono.
+- [x] **Famiglia reale creata** (`supabase/002_famiglia_reale.sql`): "Famiglia" con GaS (89gasgas@gmail.com) e Chips (valesposito818@gmail.com).
+  - ⚠️ **Sorpresa per Chips:** GaS non vuole che Chips riceva messaggi o inviti. Non inviare nulla a Chips finché GaS non lo dice.
 - [ ] Non ancora fatti: controllo giornaliero anti-pausa Supabase e backup giornaliero (GitHub Actions); eliminazione di un prodotto (non prevista dalle user story).
 - [ ] Lista iniziale della spesa (in ordine di supermercato) da ricevere da GaS
 - [ ] Icona dell'app (facoltativa)
