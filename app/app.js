@@ -543,13 +543,12 @@
     $('logout-btn').hidden = view === 'login';
     $('tabs').hidden = !['list', 'todo'].includes(view);
     document.body.classList.toggle('has-tabs', !$('tabs').hidden);
-    $('title').textContent = view === 'todo' ? 'Da fare' : 'Spesa';
     for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === view);
   }
 
   async function membership(email) {
     const cacheKey = 'fa.me.' + email;
-    const { data, error } = await sb.from('members').select('email,family_id,display_name').eq('email', email);
+    const { data, error } = await sb.from('members').select('email,family_id,display_name,tagline').eq('email', email);
     if (!error) {
       const row = data[0] || null;
       if (row) localStorage.setItem(cacheKey, JSON.stringify(row)); else localStorage.removeItem(cacheKey);
@@ -565,6 +564,8 @@
     const email = (session.user.email || '').toLowerCase();
     me = await membership(email);
     if (!me) { show('denied'); return; }
+    $('tagline').textContent = me.tagline || ''; // personal line, only for that member
+    $('tagline').hidden = !me.tagline;
     loadLocal();
     let tab = 'list';
     try { tab = localStorage.getItem('fa.tab') === 'todo' ? 'todo' : 'list'; } catch (e) {}

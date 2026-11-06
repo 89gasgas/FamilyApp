@@ -13,7 +13,11 @@ body { padding-bottom: env(safe-area-inset-bottom); }
 .bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 8px;
   padding: calc(6px + env(safe-area-inset-top)) 12px 6px; background: var(--bg);
   border-bottom: 1px solid var(--line); }
-.bar h1 { font-size: 19px; margin: 0; flex: 1; }
+.brand { flex: 1; display: flex; align-items: center; gap: 9px; min-width: 0; }
+.brand img { width: 30px; height: 30px; border-radius: 8px; flex: none; }
+.brand div { display: flex; flex-direction: column; min-width: 0; }
+.bar h1 { font-size: 19px; margin: 0; line-height: 1.15; }
+#tagline { font-size: 13px; color: var(--accent); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sync { font-size: 13px; color: var(--muted); }
 .sync.off { color: var(--warn); }
 main { max-width: 560px; margin: 0 auto; padding: 8px 12px 40px; }
