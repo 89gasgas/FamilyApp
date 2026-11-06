@@ -34,10 +34,14 @@
     </section>
 
     <section id="list" hidden>
-      <form id="add-form" autocomplete="off">
-        <input id="add-input" placeholder="Aggiungi un prodotto…" enterkeyhint="done" aria-label="Nuovo prodotto">
-        <button class="primary" aria-label="Aggiungi">+</button>
-      </form>
+      <div class="add-wrap">
+        <form id="add-form" autocomplete="off">
+          <input id="add-input" placeholder="Aggiungi un prodotto…" enterkeyhint="done" aria-label="Nuovo prodotto"
+                 role="combobox" aria-controls="suggest" aria-autocomplete="list">
+          <button class="primary" aria-label="Aggiungi">+</button>
+        </form>
+        <ul id="suggest" class="suggest" role="listbox" hidden></ul>
+      </div>
       <div class="tools">
         <span id="count"></span>
         <label class="switch"><input type="checkbox" id="urgent-only"><span>Solo urgenti</span></label>

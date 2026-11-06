@@ -39,6 +39,15 @@ button { font: inherit; border: 0; border-radius: 10px; cursor: pointer; }
 .item.flash { animation: flash .9s ease; }
 @keyframes flash { 0%,100% { background: var(--card); } 30% { background: color-mix(in srgb, var(--accent) 25%, var(--card)); } }
 .item.dragging { opacity: .85; box-shadow: 0 6px 20px rgba(0,0,0,.18); position: relative; z-index: 3; }
+.add-wrap { position: relative; }
+.suggest { position: absolute; z-index: 5; top: 100%; left: 0; right: 46px; margin: -2px 0 0; padding: 4px 0;
+  list-style: none; background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.suggest li { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 9px 12px; min-height: 40px; cursor: pointer; }
+.suggest li + li { border-top: 1px solid var(--line); }
+.suggest li:active { background: color-mix(in srgb, var(--accent) 18%, var(--card)); }
+.suggest small { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .item .tag { background: none; padding: 8px 6px; font-size: 17px; line-height: 1;
   filter: grayscale(1); opacity: .25; }
 .item.opt .tag { filter: none; opacity: 1; }

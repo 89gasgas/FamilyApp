@@ -243,11 +243,51 @@
   document.addEventListener('pointerup', endDrag);
   document.addEventListener('pointercancel', endDrag);
 
+  // ---------- suggestions while typing (SP-09) ----------
+  const fold = (s) => norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '');
+  function hideSuggest() { $('suggest').hidden = true; $('suggest').replaceChildren(); }
+  function showSuggest() {
+    const raw = $('add-input').value;
+    const q = fold(raw.replace(/[\s?]+$/, ''));
+    if (q.length < 2) { hideSuggest(); return; }
+    const rank = (i) => { const n = fold(i.name); return n.startsWith(q) ? 0 : (' ' + n).includes(' ' + q) ? 1 : 2; };
+    const found = [...items.values()].filter((i) => fold(i.name).includes(q))
+      .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, 'it')).slice(0, 6);
+    if (!found.length) { hideSuggest(); return; }
+    $('suggest').replaceChildren(...found.map((i) => {
+      const el = document.createElement('li');
+      el.dataset.id = i.id;
+      el.setAttribute('role', 'option');
+      const n = document.createElement('span');
+      n.textContent = (i.optional ? '🏷️ ' : '') + i.name;
+      const hint = document.createElement('small');
+      hint.textContent = i.bought ? 'rimetti in lista' : 'già in lista';
+      el.append(n, hint);
+      return el;
+    }));
+    $('suggest').hidden = false;
+  }
+  $('add-input').addEventListener('input', showSuggest);
+  $('add-input').addEventListener('focus', showSuggest);
+  $('add-input').addEventListener('blur', () => setTimeout(hideSuggest, 150));
+  $('suggest').addEventListener('pointerdown', (e) => {
+    const el = e.target.closest('li');
+    if (!el) return;
+    e.preventDefault(); // keep the keyboard open
+    const it = items.get(el.dataset.id);
+    if (!it) return;
+    const wantOpt = /\?\s*$/.test($('add-input').value);
+    addProduct(it.name + (wantOpt ? '?' : ''));
+    $('add-input').value = '';
+    hideSuggest();
+  });
+
   // ---------- UI events ----------
   $('add-form').addEventListener('submit', (e) => {
     e.preventDefault();
     addProduct($('add-input').value);
     $('add-input').value = '';
+    hideSuggest();
     $('add-input').focus();
   });
   document.addEventListener('click', (e) => {
