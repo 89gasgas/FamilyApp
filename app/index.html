@@ -12,7 +12,7 @@
 </head>
 <body>
   <header class="bar">
-    <h1>Spesa</h1>
+    <h1 id="title">Spesa</h1>
     <span id="sync" class="sync" aria-live="polite"></span>
     <button id="flyers-btn" class="ghost" hidden>Volantini</button>
     <button id="logout-btn" class="ghost small" hidden aria-label="Esci">Esci</button>
@@ -51,7 +51,46 @@
       <h2 id="bought-title">Comprati</h2>
       <ul id="bought" class="items bought"></ul>
     </section>
+
+    <section id="todo" hidden>
+      <form id="td-form" autocomplete="off">
+        <input id="td-input" placeholder="Aggiungi una cosa da fare…" enterkeyhint="done" aria-label="Nuova attività">
+        <button class="primary" aria-label="Aggiungi">+</button>
+      </form>
+      <div class="tools">
+        <span class="chips">
+          <button type="button" id="td-who" class="chip">Chi: nessuno</button>
+          <button type="button" id="td-when" class="chip">📅 Quando</button>
+          <input type="date" id="td-due" class="hidden-date" tabindex="-1" aria-label="Scadenza">
+        </span>
+        <label class="switch"><input type="checkbox" id="mine-only"><span>Solo le mie</span></label>
+      </div>
+      <ul id="td-open" class="items tasks"></ul>
+      <p id="td-empty" class="hint" hidden>Niente da fare.</p>
+      <h2 id="td-done-title">Fatte</h2>
+      <ul id="td-done" class="items tasks done"></ul>
+    </section>
   </main>
+
+  <nav id="tabs" class="tabs" hidden>
+    <button type="button" data-tab="list" class="tab">🛒<span>Spesa</span></button>
+    <button type="button" data-tab="todo" class="tab">✓<span>Da fare</span><b id="td-badge" class="badge" hidden></b></button>
+  </nav>
+
+  <dialog id="td-edit">
+    <form method="dialog" id="td-edit-form">
+      <h2>Attività</h2>
+      <label>Testo<input id="te-title" required></label>
+      <label>Chi<select id="te-who"></select></label>
+      <label>Quando<input type="date" id="te-due"></label>
+      <div class="dlg-actions">
+        <button type="button" id="te-delete" class="ghost danger">Elimina</button>
+        <span></span>
+        <button value="cancel" formnovalidate class="ghost">Annulla</button>
+        <button value="save" class="primary">Salva</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog id="flyers">
     <h2>Volantini</h2>

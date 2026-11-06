@@ -35,8 +35,8 @@ https://claude.ai/artifact/Gae2xgFmM5QryMa35cSR4L (Claude Docs, id 7e2b727b-61c5
 Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattività (serve un controllo giornaliero che tenga attivo il progetto) e nessun backup automatico (serve un backup giornaliero gratuito, es. GitHub Actions).
 
 ## Roadmap
-1. Fondamenta + lista della spesa condivisa (user story SP-01…SP-07 nel documento)
-2. To-do condivise
+1. Fondamenta + lista della spesa condivisa (user story SP-01…SP-09 nel documento) ✅
+2. To-do condivise (TD-01…TD-07) ✅ da collaudare
 3. Notifiche
 4. Calendario (integrazione Google Calendar)
 5. Spese e finanze
@@ -77,6 +77,8 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 - [x] **Righe più compatte (6 nov 2026):** su un telefono tipico si vedono circa 15 prodotti invece di 12. Approvato da GaS.
 - [x] **SP-09 Suggerimenti mentre scrivi pubblicata (6 nov 2026).** Da 2 lettere compaiono fino a 6 prodotti dell'elenco (senza distinguere maiuscole e accenti; prima quelli che iniziano così); tocco = rimette in lista (i comprati) o evidenzia (già in lista); con "?" finale diventa "se in offerta"; Invio aggiunge il testo scritto. Tendina con bordo verde e resto dello schermo attenuato. Collaudata da GaS dal telefono ✅ (6 nov 2026).
 - [x] L'app si ricarica da sola una volta se la libreria Supabase non si carica (evita la pagina bianca con solo "Spesa"; visto nel browser di prova del PC).
+- [x] **Incremento 2: to-do condivise pubblicate (6 nov 2026)** (TD-01…TD-07, approvate da GaS con le risposte: niente nota, "Fatte" mostra le ultime 10, quelle senza persona si vedono con "Solo le mie"). Tabella `tasks` (`supabase/006_todo.sql`, RLS per famiglia, tempo reale; il backup include le attività). Nell'app: schede in basso "Spesa" / "Da fare" (ricorda l'ultima; numerino rosso = scadute o di oggi), aggiunta con chip "Chi" (tocco = nessuno → Chips → GaS → tutti e due) e "📅 Quando", cerchietto per completare, ordine per scadenza (scadute in rosso), "Solo le mie", scheda di modifica ed eliminazione.
+  - Collaudo locale con GaS (localhost) e Chips (127.0.0.1) ✅: aggiunta con persona e data, l'altro vede in < 2 s, completa/annulla, offline e risincronizzazione, "Solo le mie", modifica (correzione: salvataggio sul submit), annulla non salva, eliminazione arriva all'altro. Non provato: il selettore di data nativo di Android (`showPicker`). Da collaudare: GaS dal telefono.
 - [x] **Backup giornaliero e anti-pausa attivi (6 nov 2026).** Workflow `.github/workflows/backup.yml` ogni giorno alle 03:17 UTC (e a mano con `python scripts/gh-backup-run.py`; `--status` mostra le ultime esecuzioni). Chiama `backup_export` su Supabase (`supabase/005_backup.sql`): la chiamata tiene sveglio il progetto e scrive `backups/backup.json` nel repository solo se i dati cambiano (storico = versioni passate). La funzione accetta solo `BACKUP_KEY` (in `Segreti.txt` e nei segreti di GitHub; nel database c'è solo l'impronta SHA-256). Chiavi create da GaS lanciando `scripts/setup-backup.py` (il sistema l'aveva bloccato a Claude). Prima esecuzione su GitHub: successo, 322 prodotti salvati. In caso di errore GitHub manda un'email a GaS.
   - ⚠️ Il workflow fa commit su main: **prima di ogni `scripts/git-push.py` lanciare `scripts/git-pull.py`**.
   - Ripristino: non ancora scritto uno script; i dati sono in JSON (tabelle families, members, shopping_items) e lo schema in `supabase/*.sql`.

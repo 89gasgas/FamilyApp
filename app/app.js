@@ -1,4 +1,4 @@
-/* FamilyApp: increment 1, shared shopping list (SP-01…SP-07). */
+/* FamilyApp: shared shopping list (SP-01…SP-09) and to-dos (TD-01…TD-07). */
 (() => {
   'use strict';
   // If the Supabase library failed to load (interrupted download), reload once instead of a blank page.
@@ -20,7 +20,9 @@
   const $ = (id) => document.getElementById(id);
 
   let me = null;            // { email, family_id, display_name }
-  let items = new Map();    // id -> item
+  let items = new Map();    // id -> shopping item
+  let tasks = new Map();    // id -> task (TD)
+  let members = [];         // [{ email, display_name }] of my family
   let queue = [];           // pending changes, replayed when online
   let channel = null;
   let flushing = false;
@@ -31,12 +33,19 @@
 
   // ---------- local persistence (SP-04 offline) ----------
   function save() {
-    try { localStorage.setItem(storeKey(), JSON.stringify({ items: [...items.values()], queue })); } catch (e) {}
+    try {
+      localStorage.setItem(storeKey(), JSON.stringify({ items: [...items.values()], tasks: [...tasks.values()], members, queue }));
+    } catch (e) {}
   }
   function loadLocal() {
     try {
       const raw = JSON.parse(localStorage.getItem(storeKey()) || 'null');
-      if (raw) { items = new Map(raw.items.map((i) => [i.id, i])); queue = raw.queue || []; }
+      if (raw) {
+        items = new Map(raw.items.map((i) => [i.id, i]));
+        tasks = new Map((raw.tasks || []).map((i) => [i.id, i]));
+        members = raw.members || [];
+        queue = raw.queue || [];
+      }
     } catch (e) {}
   }
 
@@ -79,6 +88,7 @@
     $('count').textContent = `${nUrg} da comprare` + (nOpt ? ` + ${nOpt} se in offerta` : '');
     $('urgent-only').checked = urgentOnly;
     $('bought-title').hidden = bou.length === 0;
+    renderTodo();
     renderSync();
   }
   function renderSync() {
@@ -93,13 +103,16 @@
   }
 
   // ---------- local changes ----------
-  function setFields(id, fields) {
-    const it = items.get(id);
+  const SHOP = 'shopping_items', TASKS = 'tasks';
+  const tableOf = (op) => op.t || SHOP; // ops saved before TD have no table: shopping
+  const mapOf = (t) => (t === TASKS ? tasks : items);
+  function setFields(id, fields, t = SHOP) {
+    const it = mapOf(t).get(id);
     if (!it) return;
     Object.assign(it, fields);
     const last = queue[queue.length - 1];
-    if (last && last.op === 'set' && last.id === id) Object.assign(last.fields, fields);
-    else queue.push({ op: 'set', id, fields: { ...fields } });
+    if (last && last.op === 'set' && last.id === id && tableOf(last) === t) Object.assign(last.fields, fields);
+    else queue.push({ op: 'set', t, id, fields: { ...fields } });
     commit();
   }
   function commit() { save(); render(); flush(); }
@@ -142,20 +155,29 @@
   // ---------- sync with Supabase ----------
   const isNetErr = (e) => !e || /fetch|network|Failed|timeout|Load failed/i.test(e.message || String(e));
 
-  function applyPending(map) {
+  function applyPending(map, t) {
     for (const op of queue) {
+      if (tableOf(op) !== t) continue;
       if (op.op === 'add' && !map.has(op.id)) {
-        const local = items.get(op.id);
+        const local = mapOf(t).get(op.id);
         if (local) map.set(op.id, local);
       } else if (op.op === 'set' && map.has(op.id)) Object.assign(map.get(op.id), op.fields);
+      else if (op.op === 'del') map.delete(op.id);
     }
     return map;
   }
 
   async function fetchAll() {
-    const { data, error } = await sb.from('shopping_items').select('*').eq('family_id', me.family_id);
+    const [a, b, m] = await Promise.all([
+      sb.from(SHOP).select('*').eq('family_id', me.family_id),
+      sb.from(TASKS).select('*').eq('family_id', me.family_id),
+      sb.from('members').select('email,display_name').eq('family_id', me.family_id),
+    ]);
+    const error = a.error || b.error || m.error;
     if (error) { if (isNetErr(error)) setOnline(false); return; }
-    items = applyPending(new Map(data.map((i) => [i.id, i])));
+    items = applyPending(new Map(a.data.map((i) => [i.id, i])), SHOP);
+    tasks = applyPending(new Map(b.data.map((i) => [i.id, i])), TASKS);
+    members = m.data.sort((x, y) => x.display_name.localeCompare(y.display_name));
     save(); render();
   }
 
@@ -167,11 +189,15 @@
         const op = queue[0];
         let res;
         try {
-          if (op.op === 'add') {
+          if (tableOf(op) === TASKS) {
+            if (op.op === 'add') res = await sb.from(TASKS).upsert(op.row, { onConflict: 'id', ignoreDuplicates: true });
+            else if (op.op === 'del') res = await sb.from(TASKS).delete().eq('id', op.id);
+            else res = await sb.from(TASKS).update(op.fields).eq('id', op.id);
+          } else if (op.op === 'add') {
             res = await sb.rpc('add_item', { p_id: op.id, p_name: op.name, p_position: op.position,
                                              p_optional: !!op.optional });
           } else {
-            res = await sb.from('shopping_items').update(op.fields).eq('id', op.id).select();
+            res = await sb.from(SHOP).update(op.fields).eq('id', op.id).select();
           }
         } catch (e) { res = { error: e }; }
         if (res.error) {
@@ -181,7 +207,7 @@
           continue;
         }
         queue.shift();
-        if (op.op === 'add') {
+        if (op.op === 'add' && tableOf(op) === SHOP) {
           const row = res.data;
           if (row && row.id !== op.id) { // same product already on the server: adopt its id
             items.delete(op.id);
@@ -208,6 +234,14 @@
           const id = (p.new && p.new.id) || (p.old && p.old.id);
           if (queue.some((q) => q.id === id)) return; // our pending change wins until it is sent
           if (p.eventType === 'DELETE') items.delete(id); else items.set(id, p.new);
+          save(); render();
+        })
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: TASKS, filter: 'family_id=eq.' + me.family_id },
+        (p) => { // TD-03 real time
+          const id = (p.new && p.new.id) || (p.old && p.old.id);
+          if (queue.some((q) => q.id === id)) return;
+          if (p.eventType === 'DELETE') tasks.delete(id); else tasks.set(id, p.new);
           save(); render();
         })
       .subscribe((status) => { if (status === 'SUBSCRIBED') { setOnline(true); flush(); fetchAll(); } });
@@ -332,11 +366,185 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden && me) { flush(); fetchAll(); } });
   setInterval(() => { if (me && queue.length) flush(); }, 15000);
 
+  // ---------- to-dos (TD-01…TD-07) ----------
+  const WD = ['dom', 'lun', 'mar', 'mer', 'gio', 'ven', 'sab'];
+  const MO = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+  const pad = (n) => String(n).padStart(2, '0');
+  const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = () => ymd(new Date());
+  const parseDay = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const diffDays = (s) => Math.round((parseDay(s) - parseDay(today())) / 86400000);
+  function dueLabel(s) {
+    const n = diffDays(s), d = parseDay(s);
+    if (n === 0) return 'oggi';
+    if (n === 1) return 'domani';
+    if (n === -1) return 'ieri';
+    if (n > -7 && n < 7) return `${WD[d.getDay()]} ${d.getDate()}`;
+    return `${d.getDate()} ${MO[d.getMonth()]}` + (d.getFullYear() !== new Date().getFullYear() ? ` ${d.getFullYear()}` : '');
+  }
+  const doneLabel = (iso) => { const d = new Date(iso); return dueLabel(ymd(d)); };
+  const nameOf = (email) => (members.find((m) => m.email === email) || {}).display_name || (email || '?').split('@')[0];
+  const whoShort = (a) => (!a ? '' : a === 'both' ? members.map((m) => m.display_name[0]).join('+') || 'Tutti' : nameOf(a)[0]);
+  const whoLong = (a) => (!a ? 'nessuno' : a === 'both' ? 'tutti e due' : nameOf(a));
+  const isMine = (t) => !t.assignee || t.assignee === 'both' || t.assignee === me.email; // TD-06
+
+  let mineOnly = false;
+  try { mineOnly = localStorage.getItem('fa.mineOnly') === '1'; } catch (e) {}
+  let newWho = null, newDue = null;
+
+  function taskLi(t) {
+    const el = document.createElement('li');
+    el.className = 'item task';
+    el.dataset.id = t.id;
+    const check = document.createElement('button');
+    check.type = 'button';
+    check.className = 'check';
+    check.setAttribute('aria-label', t.done ? 'Rimetti da fare' : 'Fatta');
+    check.textContent = t.done ? '✓' : '';
+    const title = document.createElement('span');
+    title.className = 'title';
+    title.textContent = t.title;
+    const meta = document.createElement('span');
+    meta.className = 'meta';
+    if (t.done) meta.textContent = `${t.done_by || ''}${t.done_at ? ', ' + doneLabel(t.done_at) : ''}`;
+    else {
+      if (t.due) {
+        const due = document.createElement('span');
+        const n = diffDays(t.due);
+        due.className = 'due' + (n < 0 ? ' late' : n === 0 ? ' today' : '');
+        due.textContent = dueLabel(t.due);
+        meta.append(due);
+      }
+      if (t.assignee) {
+        const who = document.createElement('span');
+        who.className = 'who';
+        who.textContent = whoShort(t.assignee);
+        who.title = whoLong(t.assignee);
+        meta.append(who);
+      }
+    }
+    el.append(check, title, meta);
+    return el;
+  }
+
+  function renderTodo() {
+    if (!me) return;
+    const all = [...tasks.values()];
+    const open = all.filter((t) => !t.done);
+    const shown = (mineOnly ? open.filter(isMine) : open).sort((a, b) => // TD-05
+      (a.due ? 0 : 1) - (b.due ? 0 : 1) || (a.due || '').localeCompare(b.due || '') ||
+      (a.created_at || '').localeCompare(b.created_at || ''));
+    const done = all.filter((t) => t.done).sort((a, b) => (b.done_at || '').localeCompare(a.done_at || '')).slice(0, 10);
+    $('td-open').replaceChildren(...shown.map(taskLi));
+    $('td-done').replaceChildren(...done.map(taskLi));
+    $('td-empty').hidden = shown.length > 0;
+    $('td-empty').textContent = open.length ? 'Niente per te.' : 'Niente da fare.';
+    $('td-done-title').hidden = done.length === 0;
+    $('mine-only').checked = mineOnly;
+    const urgent = open.filter((t) => t.due && t.due <= today()).length; // TD-01 badge
+    $('td-badge').hidden = urgent === 0;
+    $('td-badge').textContent = urgent;
+    $('td-who').textContent = 'Chi: ' + whoLong(newWho);
+    $('td-who').classList.toggle('set', !!newWho);
+    $('td-when').textContent = '📅 ' + (newDue ? dueLabel(newDue) : 'Quando');
+    $('td-when').classList.toggle('set', !!newDue);
+  }
+
+  $('td-form').addEventListener('submit', (e) => { // TD-02
+    e.preventDefault();
+    const title = $('td-input').value.trim().replace(/\s+/g, ' ');
+    if (!title) return;
+    const row = {
+      id: crypto.randomUUID(), family_id: me.family_id, title, assignee: newWho, due: newDue, done: false,
+      created_by: me.display_name, created_at: new Date().toISOString(),
+    };
+    tasks.set(row.id, row);
+    queue.push({ op: 'add', t: TASKS, id: row.id, row: { ...row } });
+    $('td-input').value = '';
+    newWho = null; newDue = null; $('td-due').value = '';
+    commit();
+    flash(row.id);
+    $('td-input').focus();
+  });
+  $('td-who').addEventListener('click', () => {
+    const opts = [null, ...members.map((m) => m.email), 'both'];
+    newWho = opts[(opts.indexOf(newWho) + 1) % opts.length];
+    renderTodo();
+  });
+  $('td-when').addEventListener('click', () => {
+    const d = $('td-due');
+    if (!d.value) d.value = today();
+    try { d.showPicker(); } catch (e) { d.focus(); d.click(); }
+  });
+  $('td-due').addEventListener('change', (e) => { newDue = e.target.value || null; renderTodo(); });
+  $('mine-only').addEventListener('change', (e) => {
+    mineOnly = e.target.checked;
+    try { localStorage.setItem('fa.mineOnly', mineOnly ? '1' : '0'); } catch (err) {}
+    renderTodo();
+  });
+  $('tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('.tab');
+    if (!b) return;
+    show(b.dataset.tab);
+    try { localStorage.setItem('fa.tab', b.dataset.tab); } catch (err) {}
+    window.scrollTo(0, 0);
+  });
+
+  let editing = null; // TD-07
+  function openEdit(id) {
+    const t = tasks.get(id);
+    if (!t) return;
+    editing = id;
+    $('te-title').value = t.title;
+    const sel = $('te-who');
+    sel.replaceChildren(...[['', 'Nessuno'], ...members.map((m) => [m.email, m.display_name]), ['both', 'Tutti e due']]
+      .map(([v, l]) => Object.assign(document.createElement('option'), { value: v, textContent: l })));
+    sel.value = t.assignee || '';
+    $('te-due').value = t.due || '';
+    $('td-edit').showModal();
+  }
+  $('td-edit-form').addEventListener('submit', (e) => { // save on submit (the dialog close event is not reliable)
+    const t = tasks.get(editing);
+    if (e.submitter && e.submitter.value === 'save' && t) {
+      const title = $('te-title').value.trim().replace(/\s+/g, ' ');
+      const f = {};
+      if (title && title !== t.title) f.title = title;
+      const who = $('te-who').value || null;
+      if (who !== (t.assignee || null)) f.assignee = who;
+      const due = $('te-due').value || null;
+      if (due !== (t.due || null)) f.due = due;
+      if (Object.keys(f).length) setFields(t.id, f, TASKS);
+    }
+    editing = null;
+  });
+  $('te-delete').addEventListener('click', () => {
+    const t = tasks.get(editing);
+    if (!t || !confirm(`Eliminare "${t.title}"?`)) return;
+    tasks.delete(t.id);
+    queue.push({ op: 'del', t: TASKS, id: t.id });
+    $('td-edit').close('cancel');
+    commit();
+  });
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('.task');
+    if (!el) return;
+    const t = tasks.get(el.dataset.id);
+    if (!t) return;
+    if (e.target.closest('.check')) { // TD-04
+      setFields(t.id, t.done ? { done: false, done_by: null, done_at: null }
+        : { done: true, done_by: me.display_name, done_at: new Date().toISOString() }, TASKS);
+    } else openEdit(t.id);
+  });
+
   // ---------- start (SP-01) ----------
   function show(view) {
-    for (const v of ['login', 'denied', 'list']) $(v).hidden = v !== view;
+    for (const v of ['login', 'denied', 'list', 'todo']) $(v).hidden = v !== view;
     $('flyers-btn').hidden = view !== 'list';
     $('logout-btn').hidden = view === 'login';
+    $('tabs').hidden = !['list', 'todo'].includes(view);
+    document.body.classList.toggle('has-tabs', !$('tabs').hidden);
+    $('title').textContent = view === 'todo' ? 'Da fare' : 'Spesa';
+    for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === view);
   }
 
   async function membership(email) {
@@ -358,14 +566,16 @@
     me = await membership(email);
     if (!me) { show('denied'); return; }
     loadLocal();
-    show('list');
+    let tab = 'list';
+    try { tab = localStorage.getItem('fa.tab') === 'todo' ? 'todo' : 'list'; } catch (e) {}
+    show(tab); // TD-01: last tab used
     render();
     subscribe();
     flush();
     fetchAll();
   }
 
-  window.FA = { items: () => [...items.values()], queue: () => queue, flush, fetchAll };
+  window.FA = { items: () => [...items.values()], tasks: () => [...tasks.values()], queue: () => queue, flush, fetchAll };
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   start();
 })();
