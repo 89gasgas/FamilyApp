@@ -65,7 +65,7 @@ cross join (values
   ('Spese per la casa', '🏠', '#7a6a58', 7), ('Intrattenimento', '🎬', '#e2589b', 8),
   ('GaS personal extra', '🙋', '#3b7dd8', 9), ('Chips personal extra', '🙋', '#d65db1', 10),
   ('Pasto fuori', '🍽️', '#f08a24', 11), ('Pupits', '🧸', '#f2b134', 12), ('Regali', '🎁', '#cf3f6b', 13),
-  ('Salute', '💊', '#1fa3a3', 14), ('Sport', '⚽', '#4caf50', 15), ('Trasporti', '🚆', '#5c6bc0', 16),
+  ('Salute', '💊', '#1fa3a3', 14), ('Sport', '🎾', '#4caf50', 15), ('Trasporti', '🚆', '#5c6bc0', 16),
   ('Vacanze', '🏖️', '#16a0d9', 17)
 ) as c(name, icon, color, pos)
 where not exists (select 1 from public.expense_categories e where e.family_id = f.id);
