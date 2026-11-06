@@ -119,13 +119,18 @@ body.has-tabs main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 .dlg-actions span { flex: 1; }
 .danger { color: var(--warn); }
 dialog #td-edit-form { text-align: left; margin-top: 0; }
-.foot { text-align: center; margin: 28px 0 0; }
 
 /* ---------- notifications (NT) ---------- */
 .invite { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 0 8px; padding: 8px 10px;
   border-radius: 12px; background: color-mix(in srgb, var(--accent) 12%, var(--card)); font-size: 15px; }
 .invite span { flex: 1; min-width: 150px; }
 .invite .primary { padding: 6px 12px; }
+.gear { background: transparent; font-size: 22px; line-height: 1; padding: 6px; margin-right: -4px; }
+#settings { max-height: 88vh; overflow-y: auto; }
+#settings h3 { margin: 18px 0 6px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 16px; }
+#settings h2 + div > h3, #settings h2 + h3 { border-top: 0; padding-top: 0; margin-top: 4px; }
+#settings > button.ghost, #st-notify > button.ghost { padding-left: 0; }
+.st-line { margin: 4px 0; }
 #settings .lvl-title { margin: 14px 0 6px; font-weight: 600; font-size: 15px; }
 .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 .seg button { flex: 1; background: var(--bg); color: var(--ink); border-radius: 0; padding: 8px 4px; font-size: 14px; }

@@ -21,6 +21,7 @@
     </div>
     <span id="sync" class="sync" aria-live="polite"></span>
     <button id="flyers-btn" class="ghost" hidden>Volantini</button>
+    <button id="settings-btn" class="gear" aria-label="Impostazioni" hidden>⚙️</button>
   </header>
 
   <main>
@@ -101,10 +102,6 @@
       </p>
     </section>
 
-    <p class="foot">
-      <button id="settings-btn" class="ghost small" hidden>⚙️ Impostazioni</button>
-      <button id="logout-btn" class="ghost small" hidden>Esci dall'account</button>
-    </p>
   </main>
 
   <nav id="tabs" class="tabs" hidden>
@@ -168,7 +165,9 @@
   </dialog>
 
   <dialog id="settings">
-    <h2>Notifiche</h2>
+    <h2>Impostazioni</h2>
+    <div id="st-notify">
+    <h3>🔔 Notifiche</h3>
     <p id="nt-status" class="hint"></p>
     <button type="button" id="nt-enable" class="primary" hidden>Attiva su questo telefono</button>
     <div id="nt-levels">
@@ -181,13 +180,18 @@
         <button type="button" data-v="none">Nessuna</button><button type="button" data-v="mine">Solo per me</button><button type="button" data-v="all">Tutte</button>
       </div>
       <label class="switch lvl-switch"><input type="checkbox" id="nt-morning"><span>⏰ Promemoria del mattino (8:00)</span></label>
-      <p class="hint lvl-hint" id="nt-hint"></p>
     </div>
-    <div class="dlg-actions">
-      <button type="button" id="nt-test" class="ghost">Invia una prova</button>
-      <span></span>
-      <form method="dialog"><button class="primary">Chiudi</button></form>
+    <p class="hint lvl-hint" id="nt-hint"></p>
+    <button type="button" id="nt-test" class="ghost">Invia una notifica di prova</button>
     </div>
+    <h3>👤 Account</h3>
+    <p id="st-who" class="st-line"></p>
+    <button type="button" id="logout-btn" class="ghost danger">Esci dall'account</button>
+    <h3>📱 App</h3>
+    <p class="st-line" id="st-version"></p>
+    <button type="button" id="st-update" class="ghost">Cerca aggiornamenti</button>
+    <p id="st-update-hint" class="hint"></p>
+    <form method="dialog"><button class="primary">Chiudi</button></form>
   </dialog>
 
   <dialog id="flyers">

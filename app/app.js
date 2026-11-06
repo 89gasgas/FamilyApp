@@ -20,6 +20,7 @@
   const $ = (id) => document.getElementById(id);
 
   let me = null;            // { email, family_id, display_name }
+  let authEmail = "";       // signed-in Google account, also when not a member
   let items = new Map();    // id -> shopping item
   let tasks = new Map();    // id -> task (TD)
   let expenses = new Map(); // id -> expense (CO)
@@ -925,7 +926,12 @@
   }
   function openSettings() {
     $('nt-hint').textContent = '';
-    renderSettings();
+    $('st-update-hint').textContent = '';
+    $('st-notify').hidden = !me; // "denied" view: only account and app
+    $('st-who').textContent = me ? `${me.display_name} · ${me.email}` : (authEmail || '');
+    const v = window.FA_VERSION;
+    $('st-version').textContent = v && v !== 'sviluppo' ? `Versione del ${v}` : 'Versione di sviluppo (PC)';
+    if (me) renderSettings();
     if (!$('settings').open) $('settings').showModal();
   }
   async function saveNotify(patch) {
@@ -938,6 +944,19 @@
     $('nt-hint').textContent = error ? 'Non salvato: serve la connessione. Riprova.' : 'Salvato.';
   }
   $('settings-btn').addEventListener('click', openSettings);
+  $('st-update').addEventListener('click', async () => { // fetch the latest published app and restart it
+    $('st-update-hint').textContent = 'Controllo…';
+    try {
+      const r = await fetch('config.js?ts=' + Date.now(), { cache: 'no-store' });
+      const v = ((await r.text()).match(/FA_VERSION = "([^"]*)"/) || [])[1];
+      if (v && v !== window.FA_VERSION) {
+        $('st-update-hint').textContent = `Nuova versione (${v}): la carico…`;
+        const reg = 'serviceWorker' in navigator && await navigator.serviceWorker.getRegistration();
+        if (reg) await reg.update();
+        setTimeout(() => location.reload(), 600);
+      } else $('st-update-hint').textContent = 'Hai già la versione più recente.';
+    } catch (e) { $('st-update-hint').textContent = 'Serve la connessione per controllare.'; }
+  });
   $('nt-enable').addEventListener('click', async () => {
     const ok = await pushRegister(true);
     renderSettings(); renderInvite();
@@ -963,8 +982,7 @@
     view = v;
     for (const s of ['login', 'denied', 'list', 'todo', 'money']) $(s).hidden = s !== v;
     $('flyers-btn').hidden = v !== 'list';
-    $('logout-btn').hidden = v === 'login';
-    $('settings-btn').hidden = !['list', 'todo', 'money'].includes(v);
+    $('settings-btn').hidden = v === 'login';
     renderInvite();
     $('tabs').hidden = !['list', 'todo', 'money'].includes(view);
     document.body.classList.toggle('has-tabs', !$('tabs').hidden);
@@ -987,6 +1005,7 @@
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { show('login'); return; }
     const email = (session.user.email || '').toLowerCase();
+    authEmail = email;
     me = await membership(email);
     if (!me) { show('denied'); return; }
     $('tagline').textContent = me.tagline || ''; // personal line, only for that member

@@ -4,13 +4,17 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _secrets as S
 
 PROJECT = "familyapp-gas"
 s = S.load()
-subprocess.run([sys.executable, os.path.join(S.ROOT, "scripts", "gen-config.py")], check=True)
+MONTHS = "gen feb mar apr mag giu lug ago set ott nov dic".split()
+now = datetime.now()  # the PC is in Italy
+version = f"{now.day} {MONTHS[now.month - 1]} {now.year}, {now:%H:%M}"
+subprocess.run([sys.executable, os.path.join(S.ROOT, "scripts", "gen-config.py"), version], check=True)
 
 app = os.path.join(S.ROOT, "app")
 files = []
