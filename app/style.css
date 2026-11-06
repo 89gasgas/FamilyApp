@@ -194,3 +194,25 @@ dialog .vform { text-align: left; margin-top: 0; }
 .cats-list .mv:disabled { opacity: .2; }
 .cats-list .hd { padding: 4px 4px; font-size: 13px; min-width: 64px; }
 #cats-dlg { width: min(96vw, 460px); }
+
+/* ---------- calendar (CA) ---------- */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin: 4px 0 6px; }
+.cal-grid[hidden] { display: none; }
+.cal-grid .wd { text-align: center; font-size: 12px; color: var(--muted); font-weight: 600; padding: 2px 0; }
+.cal-day { background: var(--card); color: var(--ink); border-radius: 9px; padding: 5px 0 4px; min-height: 44px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 15px; }
+.cal-day.today { box-shadow: inset 0 0 0 2px var(--accent); font-weight: 700; }
+.cal-day.sel { background: var(--accent); color: var(--accent-ink); }
+.cal-day .dots { display: flex; gap: 2px; min-height: 6px; }
+.cal-day .dots i { width: 6px; height: 6px; border-radius: 50%; }
+.cal-day .dots i.light { opacity: .45; }
+.cal-day.sel .dots i { box-shadow: 0 0 0 1px var(--accent-ink); }
+.day-h { font-size: 14px; color: var(--muted); margin: 14px 2px 6px; font-weight: 600; }
+.day-h.today { color: var(--accent); }
+.cal-items .item { gap: 10px; }
+.ev-bar { width: 4px; align-self: stretch; border-radius: 2px; flex: none; }
+.cal-items .title { flex: 1; min-width: 0; }
+.cal-task .title { color: var(--muted); }
+.cal-items .meta { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); flex: none; }
+#ev-dlg label small { font-weight: 400; color: var(--muted); }
+#ev-series { margin: 2px 0 0; }

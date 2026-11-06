@@ -1,4 +1,4 @@
-/* FamilyApp: shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06), expenses (CO-01…CO-08). */
+/* FamilyApp: shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06), expenses (CO-01…CO-08), calendar (CA-01…CA-09). */
 (() => {
   'use strict';
   // If the Supabase library failed to load (interrupted download), reload once instead of a blank page.
@@ -25,6 +25,7 @@
   let tasks = new Map();    // id -> task (TD)
   let expenses = new Map(); // id -> expense (CO)
   let cats = new Map();     // id -> expense category (CO)
+  let events = new Map();   // id -> calendar event (CA)
   let members = [];         // [{ email, display_name }] of my family
   let queue = [];           // pending changes, replayed when online
   let channel = null;
@@ -38,7 +39,7 @@
   function save() {
     try {
       localStorage.setItem(storeKey(), JSON.stringify({ items: [...items.values()], tasks: [...tasks.values()],
-        expenses: [...expenses.values()], cats: [...cats.values()], members, queue }));
+        expenses: [...expenses.values()], cats: [...cats.values()], events: [...events.values()], members, queue }));
     } catch (e) {}
   }
   function loadLocal() {
@@ -49,6 +50,7 @@
         tasks = new Map((raw.tasks || []).map((i) => [i.id, i]));
         expenses = new Map((raw.expenses || []).map((i) => [i.id, i]));
         cats = new Map((raw.cats || []).map((i) => [i.id, i]));
+        events = new Map((raw.events || []).map((i) => [i.id, i]));
         members = raw.members || [];
         queue = raw.queue || [];
       }
@@ -96,6 +98,7 @@
     $('bought-title').hidden = bou.length === 0;
     renderTodo();
     renderMoney();
+    renderCal();
     renderSync();
   }
   function renderSync() {
@@ -110,9 +113,9 @@
   }
 
   // ---------- local changes ----------
-  const SHOP = 'shopping_items', TASKS = 'tasks', EXP = 'expenses', CATS = 'expense_categories';
+  const SHOP = 'shopping_items', TASKS = 'tasks', EXP = 'expenses', CATS = 'expense_categories', EVT = 'events';
   const tableOf = (op) => op.t || SHOP; // ops saved before TD have no table: shopping
-  const mapOf = (t) => ({ [TASKS]: tasks, [EXP]: expenses, [CATS]: cats }[t] || items);
+  const mapOf = (t) => ({ [TASKS]: tasks, [EXP]: expenses, [CATS]: cats, [EVT]: events }[t] || items);
   function setFields(id, fields, t = SHOP) {
     const it = mapOf(t).get(id);
     if (!it) return;
@@ -185,14 +188,15 @@
   }
 
   async function fetchAll() {
-    const [a, b, e, c, m] = await Promise.all([rows(SHOP), rows(TASKS), rows(EXP), rows(CATS),
+    const [a, b, e, c, v, m] = await Promise.all([rows(SHOP), rows(TASKS), rows(EXP), rows(CATS), rows(EVT),
       sb.from('members').select('email,display_name').eq('family_id', me.family_id)]);
-    const error = a.error || b.error || e.error || c.error || m.error;
+    const error = a.error || b.error || e.error || c.error || v.error || m.error;
     if (error) { if (isNetErr(error)) setOnline(false); return; }
     items = applyPending(new Map(a.data.map((i) => [i.id, i])), SHOP);
     tasks = applyPending(new Map(b.data.map((i) => [i.id, i])), TASKS);
     expenses = applyPending(new Map(e.data.map((i) => [i.id, i])), EXP);
     cats = applyPending(new Map(c.data.map((i) => [i.id, i])), CATS);
+    events = applyPending(new Map(v.data.map((i) => [i.id, i])), EVT);
     members = m.data.sort((x, y) => x.display_name.localeCompare(y.display_name));
     save(); render();
   }
@@ -253,7 +257,7 @@
           if (p.eventType === 'DELETE') items.delete(id); else items.set(id, p.new);
           save(); render();
         });
-    for (const t of [TASKS, EXP, CATS]) {
+    for (const t of [TASKS, EXP, CATS, EVT]) {
       channel.on('postgres_changes',
         { event: '*', schema: 'public', table: t, filter: 'family_id=eq.' + me.family_id },
         (p) => { // TD-03, CO-06 real time
@@ -862,9 +866,252 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   });
 
+  // ---------- family calendar (CA-01…CA-09) ----------
+  const DAY = 86400000;
+  const dn = (s) => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d) / DAY; }; // day number
+  const nd = (n) => new Date(n * DAY).toISOString().slice(0, 10);                                      // back to "AAAA-MM-GG"
+  const lastOfMonth = (y, m) => new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const WHO_COLORS = ['#d65db1', '#3b7dd8'];
+  const whoColor = (w) => (w === 'both' ? 'var(--accent)' : !w ? 'var(--muted)'
+    : WHO_COLORS[Math.max(0, members.findIndex((m) => m.email === w)) % WHO_COLORS.length]);
+  let caMode = 'agenda', caAt = new Date(), caSel = null, caDays = 60, evEditing = null;
+  caAt = new Date(caAt.getFullYear(), caAt.getMonth(), 1);
+  try { if (localStorage.getItem('fa.caMode') === 'month') caMode = 'month'; } catch (e) {}
+
+  function starts(ev, from, to) { // CA-06: start days of the occurrences that touch [from, to] (day numbers)
+    const d0 = dn(ev.day), len = ev.until ? dn(ev.until) - d0 : 0, out = [];
+    const lo = from - len;
+    if (ev.repeat === 'week') {
+      for (let n = d0 + Math.max(0, Math.ceil((lo - d0) / 7)) * 7; n <= to; n += 7) out.push(n);
+    } else if (ev.repeat === 'month' || ev.repeat === 'year') {
+      const [y0, m0, dd] = ev.day.split('-').map(Number);
+      const a = new Date(lo * DAY), step = ev.repeat === 'year' ? 12 : 1;
+      let k = Math.max(0, Math.floor(((a.getUTCFullYear() - y0) * 12 + a.getUTCMonth() - (m0 - 1)) / step));
+      for (;; k++) {
+        const t = new Date(Date.UTC(y0, m0 - 1 + k * step, 1)), y = t.getUTCFullYear(), m = t.getUTCMonth();
+        const n = Date.UTC(y, m, Math.min(dd, lastOfMonth(y, m))) / DAY;
+        if (n > to) break;
+        if (n >= lo) out.push(n);
+      }
+    } else if (d0 <= to && d0 >= lo) out.push(d0);
+    return out.map((n) => [n, len]);
+  }
+  function entries(from, to) { // day number -> [{ ev | t, part }]
+    const map = new Map(), put = (n, x) => { if (!map.has(n)) map.set(n, []); map.get(n).push(x); };
+    for (const ev of events.values())
+      for (const [s, len] of starts(ev, from, to))
+        for (let n = Math.max(s, from); n <= Math.min(s + len, to); n++)
+          put(n, { ev, part: len ? `${n - s + 1}/${len + 1}` : '' });
+    const t0 = dn(today());
+    for (const t of tasks.values()) { // CA-08: open to-dos with a date (in the agenda, late ones on today)
+      if (t.done || !t.due) continue;
+      const n = caMode === 'agenda' ? Math.max(dn(t.due), t0) : dn(t.due);
+      if (n >= from && n <= to) put(n, { t, late: dn(t.due) < t0 });
+    }
+    for (const list of map.values()) list.sort((a, b) => (a.t ? 1 : 0) - (b.t ? 1 : 0) ||
+      (a.ev ? a.ev.title : a.t.title).localeCompare(b.ev ? b.ev.title : b.t.title));
+    return map;
+  }
+  function dayTitle(n) {
+    const t0 = dn(today()), d = new Date(n * DAY);
+    const s = `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]}` +
+      (d.getUTCFullYear() !== new Date().getFullYear() ? ` ${d.getUTCFullYear()}` : '');
+    return n === t0 ? `Oggi · ${s}` : n === t0 + 1 ? `Domani · ${s}` : cap(s);
+  }
+  function entryLi(x) {
+    const el = document.createElement('li');
+    const bar = document.createElement('span');
+    bar.className = 'ev-bar';
+    const title = document.createElement('span');
+    title.className = 'title';
+    const meta = document.createElement('span');
+    meta.className = 'meta';
+    const who = x.ev ? x.ev.who : x.t.assignee;
+    bar.style.background = whoColor(who);
+    if (x.ev) {
+      el.className = 'item ev';
+      el.dataset.ev = x.ev.id;
+      title.textContent = x.ev.title;
+      meta.textContent = [x.part, x.ev.repeat !== 'none' ? '🔁' : '', x.ev.remind !== 'none' ? '🔔' : ''].filter(Boolean).join(' ');
+    } else {
+      el.className = 'item task cal-task';
+      el.dataset.id = x.t.id;
+      title.textContent = '✓ ' + x.t.title;
+      if (x.late) {
+        const l = document.createElement('span');
+        l.className = 'due late';
+        l.textContent = dueLabel(x.t.due);
+        meta.append(l);
+      }
+    }
+    if (who) {
+      const w = document.createElement('span');
+      w.className = 'who';
+      w.textContent = whoShort(who);
+      w.title = whoLong(who);
+      meta.append(w);
+    }
+    el.append(bar, title, meta);
+    return el;
+  }
+  function dayBlocks(map, from, to) {
+    const out = [];
+    for (let n = from; n <= to; n++) {
+      const list = map.get(n);
+      if (!list) continue;
+      const h = document.createElement('h3');
+      h.className = 'day-h' + (n === dn(today()) ? ' today' : '');
+      h.textContent = dayTitle(n);
+      const ul = document.createElement('ul');
+      ul.className = 'items cal-items';
+      ul.append(...list.map(entryLi));
+      out.push(h, ul);
+    }
+    return out;
+  }
+
+  function renderCal() { // CA-01…CA-03
+    if (!me) return;
+    for (const b of $('ca-mode').children) b.classList.toggle('on', b.dataset.v === caMode);
+    const month = caMode === 'month';
+    $('ca-prev').hidden = $('ca-next').hidden = !month;
+    $('ca-grid').hidden = !month;
+    $('ca-more').hidden = month;
+    let blocks, empty, add = '+ Aggiungi evento';
+    if (month) {
+      const y = caAt.getFullYear(), m = caAt.getMonth();
+      const from = Date.UTC(y, m, 1) / DAY, to = Date.UTC(y, m, lastOfMonth(y, m)) / DAY;
+      $('ca-label').textContent = cap(caAt.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' }));
+      const map = entries(from, to), t0 = dn(today()), cells = [];
+      for (const l of ['L', 'M', 'M', 'G', 'V', 'S', 'D']) {
+        const h = document.createElement('span');
+        h.className = 'wd';
+        h.textContent = l;
+        cells.push(h);
+      }
+      for (let i = 0; i < (new Date(from * DAY).getUTCDay() + 6) % 7; i++) cells.push(document.createElement('span'));
+      for (let n = from; n <= to; n++) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'cal-day' + (n === t0 ? ' today' : '') + (caSel === nd(n) ? ' sel' : '');
+        b.dataset.day = nd(n);
+        const num = document.createElement('span');
+        num.textContent = new Date(n * DAY).getUTCDate();
+        const dots = document.createElement('span');
+        dots.className = 'dots';
+        for (const x of (map.get(n) || []).slice(0, 4)) {
+          const d = document.createElement('i');
+          d.style.background = whoColor(x.ev ? x.ev.who : x.t.assignee);
+          if (x.t) d.className = 'light';
+          dots.append(d);
+        }
+        b.append(num, dots);
+        cells.push(b);
+      }
+      $('ca-grid').replaceChildren(...cells);
+      const s = caSel && dn(caSel) >= from && dn(caSel) <= to ? dn(caSel) : null;
+      blocks = s === null ? dayBlocks(map, from, to) : dayBlocks(map, s, s);
+      empty = s === null ? 'Niente in questo mese.' : 'Niente in questo giorno.';
+      if (s !== null) add = `+ Aggiungi il ${new Date(s * DAY).getUTCDate()}`;
+    } else {
+      const from = dn(today()), to = from + caDays;
+      $('ca-label').textContent = 'Prossimi giorni';
+      blocks = dayBlocks(entries(from, to), from, to);
+      empty = 'Niente in programma.';
+    }
+    $('ca-list').replaceChildren(...blocks);
+    $('ca-empty').hidden = blocks.length > 0;
+    $('ca-empty').textContent = empty;
+    $('ca-add').textContent = add;
+  }
+  $('ca-mode').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    caMode = b.dataset.v;
+    try { localStorage.setItem('fa.caMode', caMode); } catch (err) {}
+    renderCal();
+  });
+  $('ca-prev').addEventListener('click', () => { caAt = new Date(caAt.getFullYear(), caAt.getMonth() - 1, 1); caSel = null; renderCal(); });
+  $('ca-next').addEventListener('click', () => { caAt = new Date(caAt.getFullYear(), caAt.getMonth() + 1, 1); caSel = null; renderCal(); });
+  $('ca-more').addEventListener('click', () => { caDays += 60; renderCal(); });
+  $('ca-grid').addEventListener('click', (e) => {
+    const b = e.target.closest('.cal-day');
+    if (!b) return;
+    caSel = caSel === b.dataset.day ? null : b.dataset.day;
+    renderCal();
+  });
+  $('ca-add').addEventListener('click', () => openEvent(null, caMode === 'month' && caSel ? caSel : null));
+  $('ca-list').addEventListener('click', (e) => {
+    const el = e.target.closest('.ev');
+    if (el) openEvent(el.dataset.ev);
+  });
+  function showDay(day) { // opened from a reminder: that day in the month view
+    caMode = 'month';
+    caSel = day;
+    const d = parseDay(day);
+    caAt = new Date(d.getFullYear(), d.getMonth(), 1);
+    renderCal();
+  }
+
+  function openEvent(id, day) { // CA-04, CA-05
+    const ev = id && events.get(id);
+    evEditing = ev ? ev.id : null;
+    $('ev-h').textContent = ev ? 'Modifica evento' : 'Nuovo evento';
+    $('ev-title').value = ev ? ev.title : '';
+    $('ev-day').value = ev ? ev.day : day || today();
+    $('ev-until').value = ev ? ev.until || '' : '';
+    const sel = $('ev-who');
+    sel.replaceChildren(...[...members.map((m) => [m.email, m.display_name]), ['both', 'Tutti e due']]
+      .map(([v, l]) => Object.assign(document.createElement('option'), { value: v, textContent: l })));
+    sel.value = ev ? ev.who : 'both';
+    $('ev-repeat').value = ev ? ev.repeat : 'none';
+    $('ev-remind').value = ev ? ev.remind : 'none';
+    $('ev-series').hidden = !(ev && ev.repeat !== 'none');
+    $('ev-delete').hidden = !ev;
+    $('ev-err').hidden = true;
+    $('ev-dlg').showModal();
+    if (!ev) setTimeout(() => $('ev-title').focus(), 50);
+  }
+  $('ev-form').addEventListener('submit', (e) => {
+    if (!e.submitter || e.submitter.value !== 'save') { evEditing = null; return; }
+    const f = { title: $('ev-title').value.trim().replace(/\s+/g, ' '), day: $('ev-day').value,
+      until: $('ev-until').value || null, who: $('ev-who').value || 'both',
+      repeat: $('ev-repeat').value, remind: $('ev-remind').value };
+    if (f.until === f.day) f.until = null;
+    if (!f.title || !f.day || (f.until && f.until < f.day)) {
+      e.preventDefault();
+      $('ev-err').textContent = !f.title ? 'Scrivi un titolo.' : '"Fino al" deve venire dopo il giorno.';
+      $('ev-err').hidden = false;
+      return;
+    }
+    const old = evEditing && events.get(evEditing);
+    if (old) {
+      const diff = {};
+      for (const k of Object.keys(f)) if (f[k] !== (old[k] ?? null)) diff[k] = f[k];
+      if (Object.keys(diff).length) setFields(old.id, diff, EVT);
+    } else {
+      const row = { id: crypto.randomUUID(), family_id: me.family_id, ...f, created_by: me.display_name,
+        created_at: new Date().toISOString() };
+      events.set(row.id, row);
+      queue.push({ op: 'add', t: EVT, id: row.id, row: { ...row } });
+      commit();
+    }
+    evEditing = null;
+  });
+  $('ev-delete').addEventListener('click', () => {
+    const ev = events.get(evEditing);
+    if (!ev || !confirm(ev.repeat !== 'none' ? `Eliminare "${ev.title}" e tutte le sue ripetizioni?` : `Eliminare "${ev.title}"?`)) return;
+    events.delete(ev.id);
+    queue.push({ op: 'del', t: EVT, id: ev.id });
+    evEditing = null;
+    $('ev-dlg').close('cancel');
+    commit();
+  });
+
   // ---------- notifications (NT-01…NT-06) ----------
   const pushOk = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
-  const NT_DEFAULT = { shop: 'none', todo: 'mine', morning: true };
+  const NT_DEFAULT = { shop: 'none', todo: 'mine', morning: true, cal: true };
+  const TABS = ['list', 'todo', 'cal', 'money'];
   const b64uBytes = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)),
     (c) => c.charCodeAt(0));
   const permission = () => (pushOk ? Notification.permission : 'unsupported');
@@ -900,7 +1147,7 @@
   function renderInvite() { // NT-01
     let no = false;
     try { no = localStorage.getItem('fa.ntInvite') === 'no'; } catch (e) {}
-    $('nt-invite').hidden = !(permission() === 'default' && !no && ['list', 'todo', 'money'].includes(view));
+    $('nt-invite').hidden = !(permission() === 'default' && !no && TABS.includes(view));
   }
   $('nt-invite-yes').addEventListener('click', async () => {
     const ok = await pushRegister(true);
@@ -917,6 +1164,7 @@
     for (const seg of document.querySelectorAll('#settings .seg'))
       for (const b of seg.children) b.classList.toggle('on', b.dataset.v === p[seg.dataset.key]);
     $('nt-morning').checked = !!p.morning;
+    $('nt-cal').checked = p.cal !== false;
     $('nt-status').textContent = {
       granted: 'Attive su questo telefono. Scegli cosa ricevere:',
       default: 'Non ancora attive su questo telefono.',
@@ -970,6 +1218,7 @@
     if (b) saveNotify({ [b.parentElement.dataset.key]: b.dataset.v });
   });
   $('nt-morning').addEventListener('change', (e) => saveNotify({ morning: e.target.checked }));
+  $('nt-cal').addEventListener('change', (e) => saveNotify({ cal: e.target.checked }));
   $('nt-test').addEventListener('click', async () => {
     await pushRegister(false);
     const { error } = await sb.rpc('push_test');
@@ -977,17 +1226,18 @@
   });
   if (pushOk) navigator.serviceWorker.addEventListener('message', (e) => { // NT-06, app already open
     const tab = e.data && e.data.tab;
-    if (me && ['list', 'todo', 'money'].includes(tab)) { show(tab); try { localStorage.setItem('fa.tab', tab); } catch (err) {} }
+    if (me && TABS.includes(tab)) { show(tab); try { localStorage.setItem('fa.tab', tab); } catch (err) {} }
+    if (me && tab === 'cal' && /^\d{4}-\d\d-\d\d$/.test(e.data.day || '')) showDay(e.data.day);
   });
 
   // ---------- start (SP-01) ----------
   function show(v) {
     view = v;
-    for (const s of ['login', 'denied', 'list', 'todo', 'money']) $(s).hidden = s !== v;
+    for (const s of ['login', 'denied', ...TABS]) $(s).hidden = s !== v;
     $('flyers-btn').hidden = v !== 'list';
     $('settings-btn').hidden = v === 'login';
     renderInvite();
-    $('tabs').hidden = !['list', 'todo', 'money'].includes(view);
+    $('tabs').hidden = !TABS.includes(view);
     document.body.classList.toggle('has-tabs', !$('tabs').hidden);
     for (const b of document.querySelectorAll('.tab')) b.classList.toggle('on', b.dataset.tab === view);
   }
@@ -1015,10 +1265,11 @@
     $('tagline').hidden = !me.tagline;
     loadLocal();
     let tab = 'list';
-    try { const saved = localStorage.getItem('fa.tab'); tab = ['todo', 'money'].includes(saved) ? saved : 'list'; } catch (e) {}
-    const asked = new URLSearchParams(location.search).get('tab'); // NT-06: opened from a notification
-    if (['list', 'todo', 'money'].includes(asked)) {
+    try { const saved = localStorage.getItem('fa.tab'); tab = TABS.includes(saved) ? saved : 'list'; } catch (e) {}
+    const qs = new URLSearchParams(location.search), asked = qs.get('tab'); // NT-06: opened from a notification
+    if (TABS.includes(asked)) {
       tab = asked;
+      if (asked === 'cal' && /^\d{4}-\d\d-\d\d$/.test(qs.get('day') || '')) showDay(qs.get('day'));
       try { localStorage.setItem('fa.tab', tab); } catch (e) {}
       history.replaceState(null, '', location.pathname);
     }
@@ -1030,7 +1281,7 @@
     pushRegister(false); // keeps this phone registered (the address can change over time)
   }
 
-  window.FA = { items: () => [...items.values()], tasks: () => [...tasks.values()], queue: () => queue, flush, fetchAll };
+  window.FA = { items: () => [...items.values()], tasks: () => [...tasks.values()], events: () => [...events.values()], queue: () => queue, flush, fetchAll };
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   start();
 })();

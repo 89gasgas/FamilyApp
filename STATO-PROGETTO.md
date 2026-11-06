@@ -38,7 +38,7 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 1. Fondamenta + lista della spesa condivisa (user story SP-01…SP-09 nel documento) ✅
 2. To-do condivise (TD-01…TD-07) ✅
 3. Notifiche (NT-01…NT-06) ✅ (collaudate da GaS; manca la prova con Chips)
-4. Calendario e ricorrenze, fatto in casa senza Google (CA-01…CA-09 in bozza nel documento, da approvare). Decisioni di GaS: viste Agenda + Mese, solo giorno e titolo, promemoria scelto per evento, le cose di Da fare con data compaiono nel calendario
+4. Calendario e ricorrenze, fatto in casa senza Google (CA-01…CA-09 approvate) ✅ pubblicato, da collaudare dal telefono. Decisioni di GaS: viste Agenda + Mese, solo giorno e titolo, promemoria scelto per evento, le cose di Da fare con data compaiono nel calendario
 5. Spese del mese (CO-01…CO-08, solo uscite, stile Monefy) ✅ pubblicate, da collaudare dal telefono
 6. ~~Ricorrenze e promemoria~~ (unite al Calendario)
 7. Liste libere (film, libri…)
@@ -83,6 +83,12 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 - [x] **Incremento 4: spese del mese pubblicate (6 nov 2026)** (CO-01…CO-08 approvate da GaS e scritte nel documento: solo uscite, niente filtro per persona, niente notifiche, niente import da Monefy ma export per Excel). Da collaudare dal telefono.
 - [x] **Rotella ⚙️ in alto a destra (6 nov 2026)**: raccoglie notifiche, categorie ed export delle spese (spostati dalla scheda Spese), account (chi è collegato, Esci) e app (versione = data e ora della pubblicazione, scritta da `deploy.py` in `config.js`; "Cerca aggiornamenti" ricarica l'app se c'è una versione nuova). Tolti i pulsanti in fondo alla pagina.
 - [x] **Spese: "+ Aggiungi spesa" sotto l'anello (6 nov 2026)**: spesa generica, la categoria si sceglie nel modulo (obbligatoria). Icona di Sport: 🎾.
+- [x] **Incremento 5: calendario pubblicato (6 nov 2026)** (CA-01…CA-09 approvate da GaS: niente promemoria una settimana prima, sì al "fino al").
+  - Scheda 📅 Calendario con Agenda (prossimi 60 giorni, "Mostra i giorni successivi") e Mese (griglia con pallini, tocco su un giorno = elenco di quel giorno).
+  - Tabella `events` (`supabase/011_calendario.sql`): day, until, who (email o 'both'), repeat none/week/month/year, remind none/morning/evening. Regola delle ripetizioni `private.starts_on` (31 → ultimo del mese, 29 feb → 28).
+  - Promemoria: `private.push_calendar()` ogni ora (cron `fa-calendar`): alle 8 "📅 Oggi", alle 20 "📅 Domani", a chi è coinvolto; interruttore `cal` nella rotella. La notifica apre il giorno nel Mese.
+  - Le cose di Da fare con data compaiono nel calendario (le scadute su Oggi nell'Agenda). Backup e `restore.py` includono `events`.
+  - Provato sul PC con le due utenti di prova (realtime, offline, promemoria simulati alle 20 e alle 8). Dati di prova lasciati nella famiglia di prova.
   - Database `supabase/009_spese.sql`: tabelle `expense_categories` (nome, emoji, colore, ordine, nascosta) ed `expenses` (importo in centesimi, nota, data, chi l'ha inserita), RLS per famiglia, tempo reale; 17 categorie iniziali per ogni famiglia (Luna = il gatto 🐱, Pupits = i bimbi 🧸, Punto = la macchina 🚗). Backup e `scripts/restore.py` includono le spese.
   - Nell'app: terza scheda 💶 Spese con anello colorato, icone delle categorie intorno (tocco = nuova spesa: importo, categoria, nota, data), totale al centro, elenco per categoria con percentuale; frecce ‹ mese › e Mese/Anno; tocco su una categoria = sue spese, tocco su una spesa = modifica/elimina; ✏️ Categorie (icona, nome, colore, ordine, nascondi; eliminabile solo se senza spese); ⬇️ Esporta per Excel (CSV con punto e virgola e virgola decimale).
   - Collaudo locale con GaS e Chips di prova ✅: aggiunta, totale mese e anno, mese precedente, dettaglio, modifica, eliminazione, categorie (rinomina, nascondi, sposta, aggiungi, elimina), Chips vede subito le spese di GaS e viceversa, spesa offline sincronizzata, export, backup e ripristino. Non provati sul PC: il download sul telefono e la tastiera numerica di Android.

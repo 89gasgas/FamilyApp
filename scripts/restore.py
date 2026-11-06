@@ -26,7 +26,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 FAMILIES = {"prova": "00000000-0000-0000-0000-0000000000f1",
             "reale": "496e6cf0-7604-4405-8efb-62ec3ed42aa4"}
-DATA_TABLES = ("shopping_items", "tasks", "expense_categories", "expenses")  # replaced wholesale, in FK order
+DATA_TABLES = ("shopping_items", "tasks", "expense_categories", "expenses", "events")  # replaced wholesale, in FK order
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--family", required=True)

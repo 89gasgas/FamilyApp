@@ -1,5 +1,5 @@
 // Network first, cache as fallback: always fresh online, still opens offline (SP-04).
-const CACHE = 'fa-shell-v2';
+const CACHE = 'fa-shell-v3';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'config.js', 'vendor/supabase.js',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/badge-96.png'];
 
@@ -38,7 +38,7 @@ self.addEventListener('notificationclick', (e) => {
   const tab = url.searchParams.get('tab');
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((cs) => {
     const c = cs.find((w) => 'focus' in w);
-    if (c) { c.postMessage({ tab }); return c.focus(); }
+    if (c) { c.postMessage({ tab, day: url.searchParams.get('day') }); return c.focus(); }
     return self.clients.openWindow(url.href);
   }));
 });

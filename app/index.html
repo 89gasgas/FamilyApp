@@ -83,6 +83,20 @@
       <ul id="td-done" class="items tasks done"></ul>
     </section>
 
+    <section id="cal" hidden>
+      <div class="period">
+        <button type="button" id="ca-prev" class="ghost arrow" aria-label="Mese precedente">‹</button>
+        <span id="ca-label"></span>
+        <button type="button" id="ca-next" class="ghost arrow" aria-label="Mese successivo">›</button>
+        <span class="seg mini" id="ca-mode"><button type="button" data-v="agenda">Agenda</button><button type="button" data-v="month">Mese</button></span>
+      </div>
+      <div id="ca-grid" class="cal-grid" hidden></div>
+      <p class="mo-add"><button type="button" id="ca-add" class="ghost">+ Aggiungi evento</button></p>
+      <div id="ca-list"></div>
+      <p id="ca-empty" class="hint center" hidden></p>
+      <p class="mo-add"><button type="button" id="ca-more" class="ghost small">Mostra i giorni successivi</button></p>
+    </section>
+
     <section id="money" hidden>
       <div class="period">
         <button type="button" id="mo-prev" class="ghost arrow" aria-label="Periodo precedente">‹</button>
@@ -103,6 +117,7 @@
   <nav id="tabs" class="tabs" hidden>
     <button type="button" data-tab="list" class="tab">🛒<span>Spesa</span></button>
     <button type="button" data-tab="todo" class="tab">✓<span>Da fare</span><b id="td-badge" class="badge" hidden></b></button>
+    <button type="button" data-tab="cal" class="tab">📅<span>Calendario</span></button>
     <button type="button" data-tab="money" class="tab">💶<span>Spese</span></button>
   </nav>
 
@@ -131,6 +146,30 @@
       <p id="ex-err" class="hint danger" hidden>Scrivi un importo maggiore di zero.</p>
       <div class="dlg-actions">
         <button type="button" id="ex-delete" class="ghost danger">Elimina</button>
+        <span></span>
+        <button value="cancel" formnovalidate class="ghost">Annulla</button>
+        <button value="save" class="primary">Salva</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="ev-dlg">
+    <form method="dialog" id="ev-form" class="vform">
+      <h2 id="ev-h">Nuovo evento</h2>
+      <label>Titolo<input id="ev-title" autocomplete="off" enterkeyhint="done"></label>
+      <label>Giorno<input type="date" id="ev-day" required></label>
+      <label>Fino al <small>(facoltativo, per più giorni)</small><input type="date" id="ev-until"></label>
+      <label>Per chi<select id="ev-who"></select></label>
+      <label>Si ripete<select id="ev-repeat">
+        <option value="none">No</option><option value="week">Ogni settimana</option>
+        <option value="month">Ogni mese</option><option value="year">Ogni anno</option></select></label>
+      <label>Promemoria<select id="ev-remind">
+        <option value="none">Nessuno</option><option value="evening">La sera prima (20:00)</option>
+        <option value="morning">La mattina stessa (8:00)</option></select></label>
+      <p id="ev-series" class="hint">Le modifiche valgono per tutte le ripetizioni.</p>
+      <p id="ev-err" class="hint danger" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" id="ev-delete" class="ghost danger">Elimina</button>
         <span></span>
         <button value="cancel" formnovalidate class="ghost">Annulla</button>
         <button value="save" class="primary">Salva</button>
@@ -176,6 +215,7 @@
         <button type="button" data-v="none">Nessuna</button><button type="button" data-v="mine">Solo per me</button><button type="button" data-v="all">Tutte</button>
       </div>
       <label class="switch lvl-switch"><input type="checkbox" id="nt-morning"><span>⏰ Promemoria del mattino (8:00)</span></label>
+      <label class="switch lvl-switch"><input type="checkbox" id="nt-cal"><span>📅 Promemoria del calendario</span></label>
     </div>
     <p class="hint lvl-hint" id="nt-hint"></p>
     <button type="button" id="nt-test" class="ghost">Invia una notifica di prova</button>
