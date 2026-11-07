@@ -1,4 +1,579 @@
 {
+ "events": [
+  {
+   "created_at": "2026-11-06T19:30:02.956+00:00",
+   "created_by": "GaS (prova)",
+   "day": "2026-10-31",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "cd835240-946e-46be-8fcb-4842ad461661",
+   "remind": "morning",
+   "repeat": "month",
+   "title": "Bolletta luce",
+   "until": null,
+   "updated_at": "2026-11-06T19:30:03.522391+00:00",
+   "who": "test-gas@familyapp.test"
+  },
+  {
+   "created_at": "2026-11-06T19:30:03.217+00:00",
+   "created_by": "GaS (prova)",
+   "day": "2026-11-03",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "5409dd09-03af-452e-a422-a458032377dd",
+   "remind": "none",
+   "repeat": "week",
+   "title": "Calcetto con Marco",
+   "until": null,
+   "updated_at": "2026-11-06T19:30:51.985012+00:00",
+   "who": "test-gas@familyapp.test"
+  },
+  {
+   "created_at": "2026-11-06T19:31:02.681+00:00",
+   "created_by": "GaS (prova)",
+   "day": "2026-11-07",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "d73c750f-bd26-46f6-a08f-62238c6bbd35",
+   "remind": "evening",
+   "repeat": "none",
+   "title": "Dentista Pupits",
+   "until": null,
+   "updated_at": "2026-11-06T19:31:04.772443+00:00",
+   "who": "both"
+  },
+  {
+   "created_at": "2026-11-06T19:30:02.418+00:00",
+   "created_by": "GaS (prova)",
+   "day": "2026-11-20",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "0ab7a284-a2b4-4c2c-a806-eb5bcc4a0c28",
+   "remind": "evening",
+   "repeat": "year",
+   "title": "Compleanno Chips",
+   "until": null,
+   "updated_at": "2026-11-06T19:30:03.034306+00:00",
+   "who": "both"
+  }
+ ],
+ "expense_categories": [
+  {
+   "color": "#8e5cc4",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "👕",
+   "id": "735bcf9e-b87e-4c4f-9e3e-fbcb279c0e90",
+   "name": "Abbigliamento",
+   "position": 1,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#2f9e5b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🛒",
+   "id": "7a59e4e7-9e6b-4216-8975-df94e1d19cc7",
+   "name": "Alimentari",
+   "position": 2,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#b07d48",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": true,
+   "icon": "🐱",
+   "id": "f0c8d998-9b8b-43d1-8aea-3698f93fae3d",
+   "name": "Luna",
+   "position": 3,
+   "updated_at": "2026-11-06T16:32:35.24336+00:00"
+  },
+  {
+   "color": "#d9534f",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "⛽",
+   "id": "f2fb2c76-abea-41f7-b647-9ea4d9538e40",
+   "name": "Benzina",
+   "position": 4,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#c0392b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🚗",
+   "id": "3bbb73e9-bf2d-496f-8854-a39335cc961e",
+   "name": "Punto",
+   "position": 5,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#e6a700",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "💡",
+   "id": "50287e2a-028b-4c38-8b8b-8877caee4b88",
+   "name": "Bollette",
+   "position": 6,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#7a6a58",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🏠",
+   "id": "01d6a766-ef10-4023-b764-795fd7c6f3bb",
+   "name": "Spese per la casa",
+   "position": 7,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#e2589b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🎬",
+   "id": "40d07435-1a76-4207-b23c-77589dd037fc",
+   "name": "Intrattenimento",
+   "position": 8,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#3b7dd8",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🙋",
+   "id": "7835c12d-cdbb-4bdc-bd90-7a7d3c481b76",
+   "name": "GaS personal extra",
+   "position": 9,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#d65db1",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🙋",
+   "id": "d44b45e8-4f1f-4b90-9996-895e07e7bd45",
+   "name": "Chips personal extra",
+   "position": 10,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#f08a24",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🍽️",
+   "id": "85b29d1d-8088-4204-bfb6-e4f4fdbd8914",
+   "name": "Pasto fuori",
+   "position": 11,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#f2b134",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🧸",
+   "id": "9c9b10f5-8923-4df2-a2e4-23a13ac14d5a",
+   "name": "Pupits",
+   "position": 12,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#cf3f6b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🎁",
+   "id": "94813587-2c26-4a48-a327-e60fc62b9dbf",
+   "name": "Regali",
+   "position": 13,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#1fa3a3",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "💊",
+   "id": "a1fa7359-711d-436a-b7d7-8a597c5bd4b7",
+   "name": "Salute",
+   "position": 14,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#4caf50",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🎾",
+   "id": "aecb22eb-4e26-4915-a1fd-9a0f24a9016e",
+   "name": "Palestra",
+   "position": 15,
+   "updated_at": "2026-11-06T18:57:59.782566+00:00"
+  },
+  {
+   "color": "#16a0d9",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🏖️",
+   "id": "fe0bf103-be39-4423-8bdc-ad6fefe1f338",
+   "name": "Vacanze",
+   "position": 16,
+   "updated_at": "2026-11-06T16:32:35.465563+00:00"
+  },
+  {
+   "color": "#5c6bc0",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "hidden": false,
+   "icon": "🚆",
+   "id": "117f3b5e-bf7f-4fe3-996d-25e9f64a5d3c",
+   "name": "Trasporti",
+   "position": 17,
+   "updated_at": "2026-11-06T16:32:35.60503+00:00"
+  },
+  {
+   "color": "#8e5cc4",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "👕",
+   "id": "0067dc29-1ccb-4d72-82cd-175cf395e9af",
+   "name": "Abbigliamento",
+   "position": 1,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#2f9e5b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🛒",
+   "id": "cd681b99-b264-4151-a80d-fc22e5e6009b",
+   "name": "Alimentari",
+   "position": 2,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#b07d48",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🐱",
+   "id": "ee3893a2-c6c2-40b2-9741-3894ec2d48ca",
+   "name": "Luna",
+   "position": 3,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#d9534f",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "⛽",
+   "id": "2dc466f2-7083-423f-a22e-f6cd77aacf0e",
+   "name": "Benzina",
+   "position": 4,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#c0392b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🚗",
+   "id": "0ee3c455-e43f-4ad8-ab9f-37aec82e2f7d",
+   "name": "Punto",
+   "position": 5,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#e6a700",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "💡",
+   "id": "a1b833dc-00f5-47e2-8c44-a5171ad6e0d2",
+   "name": "Bollette",
+   "position": 6,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#7a6a58",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🏠",
+   "id": "5582ae1f-adc4-459b-8ea9-ed3c1a02c697",
+   "name": "Spese per la casa",
+   "position": 7,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#e2589b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🎬",
+   "id": "2a81c774-a405-443e-be3a-639e4bd960d7",
+   "name": "Intrattenimento",
+   "position": 8,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#3b7dd8",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🙋",
+   "id": "bf79b10e-0c68-4e49-8a99-40b246c57eaf",
+   "name": "GaS personal extra",
+   "position": 9,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#d65db1",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🙋",
+   "id": "bb13cf04-5d3f-4adf-9ba9-e1ee5d8af9d4",
+   "name": "Chips personal extra",
+   "position": 10,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#f08a24",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🍽️",
+   "id": "4f86b7fa-d459-476c-91ee-c4c8ab5a5dc0",
+   "name": "Pasto fuori",
+   "position": 11,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#f2b134",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🧸",
+   "id": "6c80b369-c29f-4e08-a4f9-1de8151e67fd",
+   "name": "Pupits",
+   "position": 12,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#cf3f6b",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🎁",
+   "id": "6116792a-6d46-4c6a-94e3-a40d6c04d04c",
+   "name": "Regali",
+   "position": 13,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#1fa3a3",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "💊",
+   "id": "d4580245-6455-4186-9b78-d1272560f916",
+   "name": "Salute",
+   "position": 14,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#4caf50",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🎾",
+   "id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
+   "name": "Sport",
+   "position": 15,
+   "updated_at": "2026-11-06T18:57:59.782566+00:00"
+  },
+  {
+   "color": "#5c6bc0",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🚆",
+   "id": "17159453-3305-434a-8d6d-9a0944ea979d",
+   "name": "Trasporti",
+   "position": 16,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  },
+  {
+   "color": "#16a0d9",
+   "created_at": "2026-11-06T16:29:00.008288+00:00",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "hidden": false,
+   "icon": "🏖️",
+   "id": "de6eff63-f9ec-4830-8fcc-783696dd1019",
+   "name": "Vacanze",
+   "position": 17,
+   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+  }
+ ],
+ "expenses": [
+  {
+   "amount_cents": 125000,
+   "category_id": "fe0bf103-be39-4423-8bdc-ad6fefe1f338",
+   "created_at": "2026-11-06T16:32:00.861+00:00",
+   "created_by": "GaS (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "d730d0d4-d214-4215-b256-460d188527d8",
+   "note": "acconto",
+   "spent_on": "2026-10-15",
+   "updated_at": "2026-11-06T16:32:01.366918+00:00"
+  },
+  {
+   "amount_cents": 4530,
+   "category_id": "7a59e4e7-9e6b-4216-8975-df94e1d19cc7",
+   "created_at": "2026-11-06T16:31:58.96+00:00",
+   "created_by": "GaS (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "72ac122b-1b66-4ebc-bad7-fce532033ccc",
+   "note": "Lidl",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T16:31:59.514606+00:00"
+  },
+  {
+   "amount_cents": 1340,
+   "category_id": "7a59e4e7-9e6b-4216-8975-df94e1d19cc7",
+   "created_at": "2026-11-06T16:31:59.436+00:00",
+   "created_by": "GaS (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "80ba5e1f-d2cf-42c5-9128-59bfec3ac336",
+   "note": "Mercatò",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T16:32:17.843922+00:00"
+  },
+  {
+   "amount_cents": 6000,
+   "category_id": "f2fb2c76-abea-41f7-b647-9ea4d9538e40",
+   "created_at": "2026-11-06T16:31:59.901+00:00",
+   "created_by": "GaS (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "0d1886b3-d5a1-498a-b0d5-73ccbea7c4f9",
+   "note": null,
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T16:32:00.396915+00:00"
+  },
+  {
+   "amount_cents": 2350,
+   "category_id": "f0c8d998-9b8b-43d1-8aea-3698f93fae3d",
+   "created_at": "2026-11-06T16:32:00.386+00:00",
+   "created_by": "GaS (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "9427fb06-c00a-455b-8684-5be108799673",
+   "note": "crocchette",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T16:32:00.878328+00:00"
+  },
+  {
+   "amount_cents": 3000,
+   "category_id": "9c9b10f5-8923-4df2-a2e4-23a13ac14d5a",
+   "created_at": "2026-11-06T16:33:10.629+00:00",
+   "created_by": "Chips (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "6d2fbde0-5d17-45e1-85bf-e8f8fd86ba39",
+   "note": "pannolini",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T16:33:11.173069+00:00"
+  },
+  {
+   "amount_cents": 1230,
+   "category_id": "a1fa7359-711d-436a-b7d7-8a597c5bd4b7",
+   "created_at": "2026-11-06T19:02:47.962+00:00",
+   "created_by": "GaS (prova)",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "5658e331-69aa-40a0-a3a2-1d10c32be64c",
+   "note": null,
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T19:02:48.535487+00:00"
+  },
+  {
+   "amount_cents": 8750,
+   "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
+   "created_at": "2026-11-06T18:14:15.753+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "26072672-fec3-4d30-a8ed-ecc534149001",
+   "note": "Piscina",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T18:14:14.147566+00:00"
+  },
+  {
+   "amount_cents": 16000,
+   "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
+   "created_at": "2026-11-06T18:15:31.253+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "c458a7ad-40ca-4d2e-80b4-2ae0b0f4cb89",
+   "note": "Michi Tennis",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T18:15:29.581445+00:00"
+  },
+  {
+   "amount_cents": 1020,
+   "category_id": "17159453-3305-434a-8d6d-9a0944ea979d",
+   "created_at": "2026-11-06T18:16:02.138+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "26c5e4f2-6006-46ec-9967-2bf2e2a38ed0",
+   "note": "Treno",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T18:16:00.447109+00:00"
+  },
+  {
+   "amount_cents": 520,
+   "category_id": "17159453-3305-434a-8d6d-9a0944ea979d",
+   "created_at": "2026-11-06T18:16:12.367+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "f3a47746-5462-44bf-94ed-7ad7d50af4fa",
+   "note": "Auostrada",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T18:16:10.674167+00:00"
+  },
+  {
+   "amount_cents": 750,
+   "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
+   "created_at": "2026-11-06T18:16:20.852+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "dcf17028-6b66-4526-a452-3e26c2fcfbd4",
+   "note": "Padel",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T18:16:19.150555+00:00"
+  },
+  {
+   "amount_cents": 5000,
+   "category_id": "4f86b7fa-d459-476c-91ee-c4c8ab5a5dc0",
+   "created_at": "2026-11-06T18:16:36.472+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "72117f30-e2b6-4733-96f4-c7c5bd7bbe1f",
+   "note": "Pasti fuori prima settimana GaS",
+   "spent_on": "2026-11-06",
+   "updated_at": "2026-11-06T18:16:34.77111+00:00"
+  }
+ ],
  "families": [
   {
    "id": "00000000-0000-0000-0000-0000000000f1",
@@ -13,22 +588,47 @@
   {
    "display_name": "GaS",
    "email": "89gasgas@gmail.com",
-   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4"
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "notify": {
+    "morning": true,
+    "shop": "urgent",
+    "todo": "mine"
+   },
+   "tagline": null
   },
   {
    "display_name": "Chips (prova)",
    "email": "test-chips@familyapp.test",
-   "family_id": "00000000-0000-0000-0000-0000000000f1"
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "notify": {
+    "morning": true,
+    "shop": "none",
+    "todo": "mine"
+   },
+   "tagline": "sei amata dal 2015, ogni giorno! (prova)"
   },
   {
    "display_name": "GaS (prova)",
    "email": "test-gas@familyapp.test",
-   "family_id": "00000000-0000-0000-0000-0000000000f1"
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "notify": {
+    "cal": true,
+    "morning": true,
+    "shop": "none",
+    "todo": "mine"
+   },
+   "tagline": null
   },
   {
    "display_name": "Chips",
    "email": "valesposito818@gmail.com",
-   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4"
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "notify": {
+    "morning": true,
+    "shop": "none",
+    "todo": "mine"
+   },
+   "tagline": "sei amata dal 2015, ogni giorno!"
   }
  ],
  "shopping_items": [
@@ -45,7 +645,7 @@
    "optional": true,
    "position": 0,
    "quantity": null,
-   "updated_at": "2026-11-06T07:54:08.998721+00:00"
+   "updated_at": "2026-11-06T15:07:56.834621+00:00"
   },
   {
    "added_at": "2026-11-05T23:23:58.12573+00:00",
@@ -65,17 +665,17 @@
   {
    "added_at": "2026-11-05T23:23:58.752352+00:00",
    "added_by": "GaS (prova)",
-   "bought": true,
-   "bought_at": "2026-11-05T23:25:59.776+00:00",
-   "bought_by": "GaS (prova)",
+   "bought": false,
+   "bought_at": null,
+   "bought_by": null,
    "family_id": "00000000-0000-0000-0000-0000000000f1",
    "id": "c9c65dd3-bd21-483a-a051-6028e6660475",
    "name": "uova",
    "name_key": "uova",
-   "optional": false,
+   "optional": true,
    "position": 3,
    "quantity": null,
-   "updated_at": "2026-11-05T23:26:00.120059+00:00"
+   "updated_at": "2026-11-06T08:18:01.206471+00:00"
   },
   {
    "added_at": "2026-11-05T23:24:35.700177+00:00",
@@ -110,9 +710,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:59:20.004+00:00",
-   "bought_by": "GaS",
+   "bought": false,
+   "bought_at": null,
+   "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "387ef1d3-c48d-4f66-88c3-ba5cd9b3481f",
    "name": "Latte PS",
@@ -120,7 +720,7 @@
    "optional": false,
    "position": 1,
    "quantity": null,
-   "updated_at": "2026-11-06T07:59:18.352561+00:00"
+   "updated_at": "2026-11-06T12:07:35.014113+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -4861,6 +5461,73 @@
    "position": 317,
    "quantity": null,
    "updated_at": "2026-11-06T07:52:56.286123+00:00"
+  }
+ ],
+ "tasks": [
+  {
+   "assignee": "test-gas@familyapp.test",
+   "created_at": "2026-11-06T08:34:24.166+00:00",
+   "created_by": "Chips (prova)",
+   "done": true,
+   "done_at": "2026-11-06T08:34:33.954+00:00",
+   "done_by": "GaS (prova)",
+   "due": "2026-11-06",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "6abc5b25-8dff-459c-b43b-e1f6a712baf6",
+   "title": "Pagare bollo auto",
+   "updated_at": "2026-11-06T08:34:34.481391+00:00"
+  },
+  {
+   "assignee": "test-chips@familyapp.test",
+   "created_at": "2026-11-06T08:34:24.998+00:00",
+   "created_by": "Chips (prova)",
+   "done": false,
+   "done_at": null,
+   "done_by": null,
+   "due": "2026-11-05",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "cf6501a8-22f2-466f-b410-978dee70beb3",
+   "title": "Rinnovare carta identità",
+   "updated_at": "2026-11-06T08:34:25.426834+00:00"
+  },
+  {
+   "assignee": "test-gas@familyapp.test",
+   "created_at": "2026-11-06T08:34:34.262+00:00",
+   "created_by": "GaS (prova)",
+   "done": false,
+   "done_at": null,
+   "done_by": null,
+   "due": "2026-11-09",
+   "family_id": "00000000-0000-0000-0000-0000000000f1",
+   "id": "5c8c7d9f-2a3c-43b2-a71f-63d455f5deac",
+   "title": "Portare auto dal meccanico (tagliando)",
+   "updated_at": "2026-11-06T08:35:36.52754+00:00"
+  },
+  {
+   "assignee": "89gasgas@gmail.com",
+   "created_at": "2026-11-06T10:37:37.624+00:00",
+   "created_by": "GaS",
+   "done": false,
+   "done_at": null,
+   "done_by": null,
+   "due": "2026-11-09",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "6a254cf0-6bcb-4900-bc79-5708ab235b44",
+   "title": "Chiedere ferie per il 26 mattina",
+   "updated_at": "2026-11-06T10:37:36.178941+00:00"
+  },
+  {
+   "assignee": "89gasgas@gmail.com",
+   "created_at": "2026-11-06T18:20:10.238+00:00",
+   "created_by": "GaS",
+   "done": false,
+   "done_at": null,
+   "done_by": null,
+   "due": "2026-11-13",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "e4ccc05d-eefb-43e3-9d84-3ea786d5330f",
+   "title": "Macchina dal meccanico per gomme e revisione",
+   "updated_at": "2026-11-06T18:20:08.614463+00:00"
   }
  ]
 }
