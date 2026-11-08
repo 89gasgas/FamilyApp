@@ -66,9 +66,12 @@
     el.className = 'item';
     el.dataset.id = item.id;
     if (item.optional) el.classList.add('opt');
-    const name = document.createElement('span');
+    const isEdit = inlineEdit && inlineEdit.id === item.id;
+    if (isEdit) el.classList.add('editing');
+    let name = document.createElement('span');
     name.className = 'name';
     name.textContent = item.name;
+    if (isEdit) name = inlineEdit.input;
     const tag = document.createElement('button'); // SP-08: tap to switch "se in offerta"
     tag.className = 'tag';
     tag.type = 'button';
@@ -88,6 +91,7 @@
     el.append(name, edit, tag, handle);
     return el;
   }
+  let inlineEdit = null; // { id, input } while a product name is being edited inline
   let urgentOnly = false;
   try { urgentOnly = localStorage.getItem('fa.urgentOnly') === '1'; } catch (e) {}
   function render() {
@@ -96,6 +100,8 @@
     const act = urgentOnly ? all.filter((i) => !i.optional) : all;
     $('active').replaceChildren(...act.map(li));
     $('bought').replaceChildren(...bou.map(li));
+    if (inlineEdit && !inlineEdit.input.isConnected) inlineEdit = null; // product gone meanwhile
+    if (inlineEdit && document.activeElement !== inlineEdit.input) inlineEdit.input.focus(); // kept across re-renders
     $('empty').hidden = act.length > 0;
     $('empty').textContent = all.length ? 'Niente di urgente.' : 'Niente da comprare.';
     $('count').textContent = `${nUrg} da comprare` + (nOpt ? ` + ${nOpt} se in offerta` : '');
@@ -372,26 +378,36 @@
     const n = e.target.closest('.item .name');
     if (n) toggle(n.parentElement.dataset.id);
   });
-  let editingItem = null;
+  // inline rename: the name becomes a text field; Invio/tap elsewhere saves, Esc cancels
   function openItem(id) {
     const it = items.get(id);
     if (!it) return;
-    editingItem = id;
-    $('it-name').value = it.name;
-    $('it-err').hidden = true;
-    $('it-edit').showModal();
+    if (inlineEdit) inlineEdit.finish(true);
+    const input = document.createElement('input');
+    input.className = 'name-edit';
+    input.value = it.name;
+    input.setAttribute('enterkeyhint', 'done');
+    input.setAttribute('autocomplete', 'off');
+    input.setAttribute('aria-label', 'Nome del prodotto');
+    function finish(keep) {
+      if (!inlineEdit || inlineEdit.input !== input) return;
+      inlineEdit = null;
+      const cur = items.get(id);
+      const name = keep ? input.value.replace(/\?+\s*$/, '').trim().replace(/\s+/g, ' ') : '';
+      const other = name && [...items.values()].find((i) => i.id !== id && norm(i.name) === norm(name));
+      if (cur && name && !other && name !== cur.name) setFields(id, { name }); else render();
+      if (other) { if (other.bought) $('bought-title').scrollIntoView({ block: 'nearest' }); flash(other.id); } // already there
+    }
+    inlineEdit = { id, input, finish };
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+      else if (e.key === 'Escape') finish(false);
+    });
+    input.addEventListener('blur', () => { if (input.isConnected) finish(true); }); // not when moved by a re-render
+    render();
+    input.focus();
+    input.select();
   }
-  $('it-form').addEventListener('submit', (e) => {
-    if (e.submitter && e.submitter.value === 'cancel') return;
-    const it = items.get(editingItem);
-    if (!it) return;
-    const name = $('it-name').value.replace(/\?+\s*$/, '').trim().replace(/\s+/g, ' ');
-    const err = (m) => { e.preventDefault(); $('it-err').textContent = m; $('it-err').hidden = false; };
-    if (!name) return err('Scrivi un nome.');
-    const other = [...items.values()].find((i) => i.id !== it.id && norm(i.name) === norm(name));
-    if (other) return err(`"${other.name}" c'è già` + (other.bought ? ' tra i comprati.' : ' in lista.'));
-    if (name !== it.name) setFields(it.id, { name });
-  });
   $('urgent-only').addEventListener('change', (e) => {
     urgentOnly = e.target.checked;
     try { localStorage.setItem('fa.urgentOnly', urgentOnly ? '1' : '0'); } catch (err) {}
