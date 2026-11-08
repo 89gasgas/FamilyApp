@@ -213,10 +213,15 @@ dialog .vform { text-align: left; margin-top: 0; }
 .cal-day.sel .dots i { box-shadow: 0 0 0 1px var(--accent-ink); }
 .day-h { font-size: 14px; color: var(--muted); margin: 14px 2px 6px; font-weight: 600; }
 .day-h.today { color: var(--accent); }
-.cal-items .item { gap: 10px; }
+/* events and dated to-dos share one row layout */
+.cal-items .item { gap: 0; }
 .ev-bar { width: 4px; align-self: stretch; border-radius: 2px; flex: none; }
-.cal-items .title { flex: 1; min-width: 0; }
+.cal-items .item .title { flex: 1; min-width: 0; padding: 8px 10px; min-height: 42px; display: flex; align-items: center;
+  cursor: pointer; }
 .cal-task .title { color: var(--muted); }
-.cal-items .meta { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); flex: none; }
+.cal-items .item .meta { display: flex; gap: 6px; align-items: center; padding-right: 12px; font-size: 13px;
+  color: var(--muted); white-space: nowrap; flex: none; cursor: pointer; }
+.cal-items .ev .who { min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; background: var(--line);
+  color: var(--ink); font-size: 12px; font-weight: 700; line-height: 22px; text-align: center; }
 #ev-dlg label small { font-weight: 400; color: var(--muted); }
 #ev-series { margin: 2px 0 0; }
