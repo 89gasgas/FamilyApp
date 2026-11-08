@@ -508,6 +508,28 @@
    "updated_at": "2026-11-06T19:02:48.535487+00:00"
   },
   {
+   "amount_cents": 750,
+   "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
+   "created_at": "2026-11-06T18:16:20.852+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "dcf17028-6b66-4526-a452-3e26c2fcfbd4",
+   "note": "Padel",
+   "spent_on": "2026-11-03",
+   "updated_at": "2026-11-07T10:30:53.245367+00:00"
+  },
+  {
+   "amount_cents": 4300,
+   "category_id": "cd681b99-b264-4151-a80d-fc22e5e6009b",
+   "created_at": "2026-11-07T10:29:57.437+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "3757bc15-cf3a-4bb2-b4e2-65eea84f5602",
+   "note": null,
+   "spent_on": "2026-11-03",
+   "updated_at": "2026-11-07T10:29:55.84758+00:00"
+  },
+  {
    "amount_cents": 8750,
    "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
    "created_at": "2026-11-06T18:14:15.753+00:00",
@@ -519,7 +541,7 @@
    "updated_at": "2026-11-06T18:14:14.147566+00:00"
   },
   {
-   "amount_cents": 16000,
+   "amount_cents": 4000,
    "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
    "created_at": "2026-11-06T18:15:31.253+00:00",
    "created_by": "GaS",
@@ -527,7 +549,7 @@
    "id": "c458a7ad-40ca-4d2e-80b4-2ae0b0f4cb89",
    "note": "Michi Tennis",
    "spent_on": "2026-11-06",
-   "updated_at": "2026-11-06T18:15:29.581445+00:00"
+   "updated_at": "2026-11-07T10:30:24.970572+00:00"
   },
   {
    "amount_cents": 1020,
@@ -552,17 +574,6 @@
    "updated_at": "2026-11-06T18:16:10.674167+00:00"
   },
   {
-   "amount_cents": 750,
-   "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
-   "created_at": "2026-11-06T18:16:20.852+00:00",
-   "created_by": "GaS",
-   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
-   "id": "dcf17028-6b66-4526-a452-3e26c2fcfbd4",
-   "note": "Padel",
-   "spent_on": "2026-11-06",
-   "updated_at": "2026-11-06T18:16:19.150555+00:00"
-  },
-  {
    "amount_cents": 5000,
    "category_id": "4f86b7fa-d459-476c-91ee-c4c8ab5a5dc0",
    "created_at": "2026-11-06T18:16:36.472+00:00",
@@ -572,6 +583,61 @@
    "note": "Pasti fuori prima settimana GaS",
    "spent_on": "2026-11-06",
    "updated_at": "2026-11-06T18:16:34.77111+00:00"
+  },
+  {
+   "amount_cents": 8500,
+   "category_id": "2dc466f2-7083-423f-a22e-f6cd77aacf0e",
+   "created_at": "2026-11-07T10:06:50.415+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "0e1804d6-20f6-4b74-826d-8162edcf916c",
+   "note": "C5",
+   "spent_on": "2026-11-07",
+   "updated_at": "2026-11-07T10:06:48.830492+00:00"
+  },
+  {
+   "amount_cents": 1400,
+   "category_id": "cd681b99-b264-4151-a80d-fc22e5e6009b",
+   "created_at": "2026-11-07T17:21:27.671+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "4959c695-89fb-4b4f-8ee7-2a6571037b6d",
+   "note": "Lidl",
+   "spent_on": "2026-11-07",
+   "updated_at": "2026-11-07T17:21:28.793078+00:00"
+  },
+  {
+   "amount_cents": 1000,
+   "category_id": "6116792a-6d46-4c6a-94e3-a40d6c04d04c",
+   "created_at": "2026-11-07T17:21:45.512+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "8e2ceadc-c3b1-4f25-a1d9-2199da06d8ff",
+   "note": "Zoe",
+   "spent_on": "2026-11-07",
+   "updated_at": "2026-11-07T17:21:46.509554+00:00"
+  },
+  {
+   "amount_cents": 4700,
+   "category_id": "6116792a-6d46-4c6a-94e3-a40d6c04d04c",
+   "created_at": "2026-11-07T18:57:18.159+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "39dc545d-12be-48f7-8849-40fe374aa2cd",
+   "note": "Mari&Marco",
+   "spent_on": "2026-11-07",
+   "updated_at": "2026-11-07T18:57:16.668774+00:00"
+  },
+  {
+   "amount_cents": 1400,
+   "category_id": "bf79b10e-0c68-4e49-8a99-40b246c57eaf",
+   "created_at": "2026-11-07T18:57:35.469+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "7435324e-3a79-4f05-b935-3e703d336ef8",
+   "note": null,
+   "spent_on": "2026-11-07",
+   "updated_at": "2026-11-07T18:57:33.743252+00:00"
   }
  ],
  "families": [
@@ -897,10 +963,10 @@
    "id": "44721653-2187-401e-93cf-1ed0e34ef0e2",
    "name": "Focaccelle",
    "name_key": "focaccelle",
-   "optional": true,
+   "optional": false,
    "position": 13,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:50:53.766144+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -920,9 +986,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-07T20:49:47.473+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "efc405c5-760d-4737-a76f-8c8b64c358b6",
    "name": "Piadine",
@@ -930,7 +996,7 @@
    "optional": false,
    "position": 15,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-07T20:49:49.001361+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -942,10 +1008,10 @@
    "id": "e50c417b-cefe-46a4-a9e5-342b03ec137f",
    "name": "Pan carré",
    "name_key": "pan carré",
-   "optional": true,
+   "optional": false,
    "position": 16,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:50:55.905583+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1002,10 +1068,10 @@
    "id": "9b9d071a-0dd0-4a77-bd70-d90866465d14",
    "name": "Miele",
    "name_key": "miele",
-   "optional": true,
+   "optional": false,
    "position": 20,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:51:06.254289+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1047,10 +1113,10 @@
    "id": "7aeeaa72-74a2-4249-94a1-fee33d45d99b",
    "name": "Fette biscottate",
    "name_key": "fette biscottate",
-   "optional": true,
+   "optional": false,
    "position": 23,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:51:14.52547+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1092,10 +1158,10 @@
    "id": "b14a77eb-f933-477e-9438-e53d76d7c999",
    "name": "Nutella",
    "name_key": "nutella",
-   "optional": true,
+   "optional": false,
    "position": 26,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:51:17.516906+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1107,10 +1173,10 @@
    "id": "7712178e-7ad6-4be9-bd27-0263606cd6b6",
    "name": "Ringo",
    "name_key": "ringo",
-   "optional": true,
+   "optional": false,
    "position": 27,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:51:18.322497+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1377,10 +1443,10 @@
    "id": "271db2b3-7149-4939-aae8-a0894482fca8",
    "name": "Sottilette",
    "name_key": "sottilette",
-   "optional": true,
+   "optional": false,
    "position": 45,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:51:49.662931+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1460,17 +1526,17 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "9436b1e6-2444-46ac-9c90-1b3651c09f36",
    "name": "Prosciutto cubetti",
    "name_key": "prosciutto cubetti",
-   "optional": false,
+   "optional": true,
    "position": 51,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-07T20:52:07.258998+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1512,10 +1578,10 @@
    "id": "ebc0db83-dc38-465e-ab76-224a47d08020",
    "name": "Pane hamburger",
    "name_key": "pane hamburger",
-   "optional": true,
+   "optional": false,
    "position": 54,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:52:16.329562+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1527,10 +1593,10 @@
    "id": "2c7f2593-034f-463d-954c-3046c5bfe711",
    "name": "Salmone affumicato",
    "name_key": "salmone affumicato",
-   "optional": true,
+   "optional": false,
    "position": 55,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:52:17.757861+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1542,10 +1608,10 @@
    "id": "42f96064-8fb6-40b5-9516-90be9125b147",
    "name": "Pasta fresca",
    "name_key": "pasta fresca",
-   "optional": true,
+   "optional": false,
    "position": 56,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:52:18.268999+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1587,17 +1653,17 @@
    "id": "b24ce3f4-d642-4cf0-a0e4-33192e262034",
    "name": "Affettato",
    "name_key": "affettato",
-   "optional": true,
+   "optional": false,
    "position": 59,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-07T20:52:26.855513+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
    "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
-   "bought_by": null,
+   "bought_at": "2026-11-07T20:52:36.885+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "9018d159-cfaa-43d9-978b-6c5086f521a1",
    "name": "Arrosto tacchino 1 etto e mezzo *",
@@ -1605,7 +1671,7 @@
    "optional": false,
    "position": 60,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-07T20:52:38.115228+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1940,8 +2006,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "39cfefd1-9b9d-4863-92f6-7ba983150f94",
@@ -1950,7 +2016,7 @@
    "optional": false,
    "position": 83,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-07T20:53:30.608319+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2210,8 +2276,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "f87f77c3-fd6d-495f-a5a8-64742ffcb5ad",
@@ -2220,7 +2286,7 @@
    "optional": false,
    "position": 101,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-07T20:53:54.395412+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5528,6 +5594,19 @@
    "id": "e4ccc05d-eefb-43e3-9d84-3ea786d5330f",
    "title": "Macchina dal meccanico per gomme e revisione",
    "updated_at": "2026-11-06T18:20:08.614463+00:00"
+  },
+  {
+   "assignee": "89gasgas@gmail.com",
+   "created_at": "2026-11-07T10:33:47.468+00:00",
+   "created_by": "GaS",
+   "done": false,
+   "done_at": null,
+   "done_by": null,
+   "due": "2026-11-19",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "e2850351-55d4-4cd3-8f0b-82ae712b4cad",
+   "title": "Reso gioco in posta",
+   "updated_at": "2026-11-07T10:33:52.993746+00:00"
   }
  ]
 }
