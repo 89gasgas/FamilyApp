@@ -57,6 +57,7 @@ button { font: inherit; border: 0; border-radius: 10px; cursor: pointer; }
 .item .tag { background: none; padding: 8px 6px; font-size: 17px; line-height: 1;
   filter: grayscale(1); opacity: .25; }
 .item.opt .tag { filter: none; opacity: 1; }
+.item .edit { background: none; padding: 8px 6px; font-size: 15px; line-height: 1; filter: grayscale(1); opacity: .45; }
 .item.opt .name { color: var(--muted); font-style: italic; }
 .tools { display: flex; align-items: center; justify-content: space-between; gap: 12px;
   margin: 0 2px 6px; font-size: 13px; color: var(--muted); }

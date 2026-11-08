@@ -76,11 +76,16 @@
     tag.setAttribute('aria-pressed', item.optional ? 'true' : 'false');
     tag.setAttribute('aria-label', 'Se in offerta');
     tag.title = item.optional ? 'Se in offerta (tocca per renderlo urgente)' : 'Tocca per segnarlo "se in offerta"';
+    const edit = document.createElement('button'); // rename the product
+    edit.className = 'edit';
+    edit.type = 'button';
+    edit.textContent = '✏️';
+    edit.setAttribute('aria-label', 'Modifica');
     const handle = document.createElement('span');
     handle.className = 'handle';
     handle.textContent = '≡';
     handle.setAttribute('aria-label', 'Sposta');
-    el.append(name, tag, handle);
+    el.append(name, edit, tag, handle);
     return el;
   }
   let urgentOnly = false;
@@ -362,8 +367,30 @@
       if (it) setFields(it.id, { optional: !it.optional });
       return;
     }
+    const ed = e.target.closest('.item .edit');
+    if (ed) { openItem(ed.parentElement.dataset.id); return; }
     const n = e.target.closest('.item .name');
     if (n) toggle(n.parentElement.dataset.id);
+  });
+  let editingItem = null;
+  function openItem(id) {
+    const it = items.get(id);
+    if (!it) return;
+    editingItem = id;
+    $('it-name').value = it.name;
+    $('it-err').hidden = true;
+    $('it-edit').showModal();
+  }
+  $('it-form').addEventListener('submit', (e) => {
+    if (e.submitter && e.submitter.value === 'cancel') return;
+    const it = items.get(editingItem);
+    if (!it) return;
+    const name = $('it-name').value.replace(/\?+\s*$/, '').trim().replace(/\s+/g, ' ');
+    const err = (m) => { e.preventDefault(); $('it-err').textContent = m; $('it-err').hidden = false; };
+    if (!name) return err('Scrivi un nome.');
+    const other = [...items.values()].find((i) => i.id !== it.id && norm(i.name) === norm(name));
+    if (other) return err(`"${other.name}" c'è già` + (other.bought ? ' tra i comprati.' : ' in lista.'));
+    if (name !== it.name) setFields(it.id, { name });
   });
   $('urgent-only').addEventListener('change', (e) => {
     urgentOnly = e.target.checked;
