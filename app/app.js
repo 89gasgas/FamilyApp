@@ -88,7 +88,7 @@
     handle.className = 'handle';
     handle.textContent = '≡';
     handle.setAttribute('aria-label', 'Sposta');
-    el.append(name, edit, tag, handle);
+    el.append(tag, name, edit, handle);
     return el;
   }
   let inlineEdit = null; // { id, input } while a product name is being edited inline

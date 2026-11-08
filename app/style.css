@@ -38,7 +38,7 @@ button { font: inherit; border: 0; border-radius: 10px; cursor: pointer; }
 .item { display: flex; align-items: center; border-bottom: 1px solid var(--line);
   touch-action: pan-y; user-select: none; -webkit-user-select: none; background: var(--card); }
 .item:last-child { border-bottom: 0; }
-.item .name { flex: 1; padding: 8px 12px; min-height: 42px; display: flex; align-items: center; }
+.item .name { flex: 1; padding: 8px 12px 8px 9px; min-height: 42px; display: flex; align-items: center; }
 .item .handle { padding: 8px 12px; color: var(--muted); cursor: grab; touch-action: none; font-size: 20px; }
 .item.flash { animation: flash .9s ease; }
 @keyframes flash { 0%,100% { background: var(--card); } 30% { background: color-mix(in srgb, var(--accent) 25%, var(--card)); } }
@@ -54,7 +54,7 @@ button { font: inherit; border: 0; border-radius: 10px; cursor: pointer; }
 .suggest li + li { border-top: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line)); }
 .suggest li:active { background: color-mix(in srgb, var(--accent) 18%, var(--card)); }
 .suggest small { color: var(--muted); font-size: 12px; white-space: nowrap; }
-.item .tag { background: none; padding: 8px 6px; font-size: 17px; line-height: 1;
+.item .tag { background: none; padding: 8px 0 8px 12px; font-size: 13px; line-height: 1;
   filter: grayscale(1); opacity: .25; }
 .item.opt .tag { filter: none; opacity: 1; }
 .item .edit { background: none; padding: 8px 6px; font-size: 15px; line-height: 1; filter: grayscale(1); opacity: .45; }

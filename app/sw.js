@@ -1,5 +1,5 @@
 // Network first, cache as fallback: always fresh online, still opens offline (SP-04).
-const CACHE = 'fa-shell-v5';
+const CACHE = 'fa-shell-v6';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'config.js', 'vendor/supabase.js',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/badge-96.png'];
 
