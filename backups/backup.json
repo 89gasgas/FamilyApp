@@ -51,6 +51,32 @@
    "until": null,
    "updated_at": "2026-11-06T19:30:03.034306+00:00",
    "who": "both"
+  },
+  {
+   "created_at": "2026-11-08T12:08:58.698+00:00",
+   "created_by": "GaS",
+   "day": "2026-11-09",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "45d76ee0-ebe4-4205-ba2c-ec366a658098",
+   "remind": "none",
+   "repeat": "none",
+   "title": "Festa Zoe per Dadi",
+   "until": null,
+   "updated_at": "2026-11-08T12:11:00.035909+00:00",
+   "who": "both"
+  },
+  {
+   "created_at": "2026-11-08T12:09:45.682+00:00",
+   "created_by": "GaS",
+   "day": "2026-11-12",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "c892aab1-93df-4b6e-a1a0-c433c85e2382",
+   "remind": "none",
+   "repeat": "none",
+   "title": "Dentista: togliere denti giudizio.",
+   "until": null,
+   "updated_at": "2026-11-08T12:09:45.779433+00:00",
+   "who": "89gasgas@gmail.com"
   }
  ],
  "expense_categories": [
@@ -711,7 +737,7 @@
    "optional": true,
    "position": 0,
    "quantity": null,
-   "updated_at": "2026-11-06T15:07:56.834621+00:00"
+   "updated_at": "2026-11-08T11:50:12.535213+00:00"
   },
   {
    "added_at": "2026-11-05T23:23:58.12573+00:00",
@@ -756,7 +782,7 @@
    "optional": false,
    "position": 4,
    "quantity": null,
-   "updated_at": "2026-11-05T23:24:35.700177+00:00"
+   "updated_at": "2026-11-08T11:54:01.770284+00:00"
   },
   {
    "added_at": "2026-11-06T07:53:58.90184+00:00",
@@ -776,9 +802,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-08T06:27:37.744+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "387ef1d3-c48d-4f66-88c3-ba5cd9b3481f",
    "name": "Latte PS",
@@ -786,7 +812,7 @@
    "optional": false,
    "position": 1,
    "quantity": null,
-   "updated_at": "2026-11-06T12:07:35.014113+00:00"
+   "updated_at": "2026-11-08T06:27:40.00822+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1826,8 +1852,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "023b30c4-04a3-4b7d-903c-3cb509b48ab0",
@@ -1836,7 +1862,7 @@
    "optional": false,
    "position": 71,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-08T11:42:49.03939+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2996,8 +3022,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "5c3cbf43-04a4-47f9-9e60-58482aedc685",
@@ -3006,7 +3032,7 @@
    "optional": false,
    "position": 149,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-08T06:27:39.752827+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5607,6 +5633,19 @@
    "id": "e2850351-55d4-4cd3-8f0b-82ae712b4cad",
    "title": "Reso gioco in posta",
    "updated_at": "2026-11-07T10:33:52.993746+00:00"
+  },
+  {
+   "assignee": "89gasgas@gmail.com",
+   "created_at": "2026-11-08T12:11:38.496+00:00",
+   "created_by": "GaS",
+   "done": false,
+   "done_at": null,
+   "done_by": null,
+   "due": "2026-11-09",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "ff1ab7cf-94fc-473a-aa4b-cfe20877c1fc",
+   "title": "Chiedere al medico se mi dà mutua venerdì.",
+   "updated_at": "2026-11-08T12:11:53.093754+00:00"
   }
  ]
 }
