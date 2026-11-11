@@ -686,6 +686,39 @@
    "note": "Bisc",
    "spent_on": "2026-11-09",
    "updated_at": "2026-11-09T10:22:11.478791+00:00"
+  },
+  {
+   "amount_cents": 510,
+   "category_id": "17159453-3305-434a-8d6d-9a0944ea979d",
+   "created_at": "2026-11-10T16:15:44.565+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "93da67b9-0521-4b80-a9a9-ec5c193bab3f",
+   "note": "Treno",
+   "spent_on": "2026-11-10",
+   "updated_at": "2026-11-10T16:15:45.676631+00:00"
+  },
+  {
+   "amount_cents": 2000,
+   "category_id": "a0e6ab5b-613f-456b-8b10-1a355cb8c327",
+   "created_at": "2026-11-10T16:15:58.901+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "f2eee5e5-95fe-44dc-bbad-5facb5104a56",
+   "note": "Tennis",
+   "spent_on": "2026-11-10",
+   "updated_at": "2026-11-10T16:15:59.875164+00:00"
+  },
+  {
+   "amount_cents": 3700,
+   "category_id": "d4580245-6455-4186-9b78-d1272560f916",
+   "created_at": "2026-11-10T16:16:32.277+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "cd0aee74-be02-4a1e-bfb8-d8fd39a0fcb4",
+   "note": "Farmacia",
+   "spent_on": "2026-11-10",
+   "updated_at": "2026-11-10T16:16:33.327786+00:00"
   }
  ],
  "families": [
