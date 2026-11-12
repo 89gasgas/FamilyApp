@@ -719,6 +719,28 @@
    "note": "Farmacia",
    "spent_on": "2026-11-10",
    "updated_at": "2026-11-10T16:16:33.327786+00:00"
+  },
+  {
+   "amount_cents": 2700,
+   "category_id": "4f86b7fa-d459-476c-91ee-c4c8ab5a5dc0",
+   "created_at": "2026-11-11T11:49:57.159+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "c648b212-f2a1-45ec-a292-bd04424be5bd",
+   "note": "Mart e merc",
+   "spent_on": "2026-11-11",
+   "updated_at": "2026-11-11T11:49:57.051236+00:00"
+  },
+  {
+   "amount_cents": 5900,
+   "category_id": "0067dc29-1ccb-4d72-82cd-175cf395e9af",
+   "created_at": "2026-11-11T17:14:07.998+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "c12bccfe-ee18-4d7a-bba4-23c7c0c6199b",
+   "note": "Scarpe Dadi",
+   "spent_on": "2026-11-11",
+   "updated_at": "2026-11-11T17:14:09.305991+00:00"
   }
  ],
  "families": [
