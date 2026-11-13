@@ -741,6 +741,28 @@
    "note": "Scarpe Dadi",
    "spent_on": "2026-11-11",
    "updated_at": "2026-11-11T17:14:09.305991+00:00"
+  },
+  {
+   "amount_cents": 1220,
+   "category_id": "d4580245-6455-4186-9b78-d1272560f916",
+   "created_at": "2026-11-12T17:51:10.359+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "e8bcba79-0c53-496b-ad43-81757ffcef6a",
+   "note": "Farmacia",
+   "spent_on": "2026-11-12",
+   "updated_at": "2026-11-12T17:51:11.304105+00:00"
+  },
+  {
+   "amount_cents": 2900,
+   "category_id": "cd681b99-b264-4151-a80d-fc22e5e6009b",
+   "created_at": "2026-11-12T17:52:09.597+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "3a45484a-f369-478c-982f-9f75bde09b63",
+   "note": "Lidl",
+   "spent_on": "2026-11-12",
+   "updated_at": "2026-11-12T17:52:10.493462+00:00"
   }
  ],
  "families": [
