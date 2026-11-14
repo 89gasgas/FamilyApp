@@ -763,6 +763,39 @@
    "note": "Lidl",
    "spent_on": "2026-11-12",
    "updated_at": "2026-11-12T17:52:10.493462+00:00"
+  },
+  {
+   "amount_cents": 13600,
+   "category_id": "d4580245-6455-4186-9b78-d1272560f916",
+   "created_at": "2026-11-13T11:23:35.887+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "ba356414-87db-4d6b-8c03-cf09801a1f99",
+   "note": "Dentista GaS",
+   "spent_on": "2026-11-13",
+   "updated_at": "2026-11-13T11:23:35.711321+00:00"
+  },
+  {
+   "amount_cents": 1000,
+   "category_id": "4f86b7fa-d459-476c-91ee-c4c8ab5a5dc0",
+   "created_at": "2026-11-13T16:08:45.678+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "afbcbbd4-4c8f-4d2e-ae0c-d616245fb02b",
+   "note": null,
+   "spent_on": "2026-11-13",
+   "updated_at": "2026-11-13T16:08:45.558622+00:00"
+  },
+  {
+   "amount_cents": 400,
+   "category_id": "0067dc29-1ccb-4d72-82cd-175cf395e9af",
+   "created_at": "2026-11-13T19:09:16.446+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "0ac5e30f-cc2f-41b8-80c8-6e52ee4ae604",
+   "note": "Guanti Dadi",
+   "spent_on": "2026-11-13",
+   "updated_at": "2026-11-13T19:09:17.319134+00:00"
   }
  ],
  "families": [
@@ -1951,9 +1984,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-13T11:40:49.667+00:00",
+   "bought_by": "GaS",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "023b30c4-04a3-4b7d-903c-3cb509b48ab0",
    "name": "Feta",
@@ -1961,7 +1994,7 @@
    "optional": false,
    "position": 71,
    "quantity": null,
-   "updated_at": "2026-11-08T11:42:49.03939+00:00"
+   "updated_at": "2026-11-13T11:40:49.452699+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2131,9 +2164,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-13T11:26:22.297+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "39cfefd1-9b9d-4863-92f6-7ba983150f94",
    "name": "Arance",
@@ -2141,7 +2174,7 @@
    "optional": false,
    "position": 83,
    "quantity": null,
-   "updated_at": "2026-11-07T20:53:30.608319+00:00"
+   "updated_at": "2026-11-13T11:26:23.488717+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2408,10 +2441,10 @@
    "id": "f87f77c3-fd6d-495f-a5a8-64742ffcb5ad",
    "name": "Basilico",
    "name_key": "basilico",
-   "optional": false,
+   "optional": true,
    "position": 101,
    "quantity": null,
-   "updated_at": "2026-11-07T20:53:54.395412+00:00"
+   "updated_at": "2026-11-13T11:26:27.048676+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2507,8 +2540,8 @@
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
    "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
-   "bought_by": null,
+   "bought_at": "2026-11-13T11:40:50.606+00:00",
+   "bought_by": "GaS",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "a01de438-ccca-4338-aff8-d0910f1578c5",
    "name": "Insalata",
@@ -2516,7 +2549,7 @@
    "optional": false,
    "position": 108,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-13T11:40:50.369107+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -3126,12 +3159,12 @@
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "5c3cbf43-04a4-47f9-9e60-58482aedc685",
-   "name": "Farina",
-   "name_key": "farina",
+   "name": "Farina 00",
+   "name_key": "farina 00",
    "optional": false,
    "position": 149,
    "quantity": null,
-   "updated_at": "2026-11-08T06:27:39.752827+00:00"
+   "updated_at": "2026-11-13T11:27:18.741632+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -3668,10 +3701,10 @@
    "id": "4c96121c-994a-460b-a0e8-46961d2dca61",
    "name": "Pasta integrale",
    "name_key": "pasta integrale",
-   "optional": false,
+   "optional": true,
    "position": 185,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-13T11:26:31.820237+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -4088,10 +4121,10 @@
    "id": "784bd317-0f13-41fa-bb87-fc89f59d3c19",
    "name": "Surgelati fast *",
    "name_key": "surgelati fast *",
-   "optional": false,
+   "optional": true,
    "position": 213,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-13T11:26:34.252119+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5303,10 +5336,10 @@
    "id": "b1573eb8-8631-4875-b36a-de821db3e2aa",
    "name": "Punte spazzolino",
    "name_key": "punte spazzolino",
-   "optional": false,
+   "optional": true,
    "position": 294,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-13T11:26:37.624049+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
