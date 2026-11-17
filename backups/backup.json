@@ -796,6 +796,28 @@
    "note": "Guanti Dadi",
    "spent_on": "2026-11-13",
    "updated_at": "2026-11-13T19:09:17.319134+00:00"
+  },
+  {
+   "amount_cents": 700,
+   "category_id": "6116792a-6d46-4c6a-94e3-a40d6c04d04c",
+   "created_at": "2026-11-16T21:31:54.724+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "44956d87-70ed-4687-89bd-03ca66f319c8",
+   "note": "Offerte",
+   "spent_on": "2026-11-15",
+   "updated_at": "2026-11-16T21:31:56.208946+00:00"
+  },
+  {
+   "amount_cents": 6000,
+   "category_id": "6116792a-6d46-4c6a-94e3-a40d6c04d04c",
+   "created_at": "2026-11-16T07:42:38.48+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "90d788f1-eb79-4bfc-8341-e92e6fbe66a3",
+   "note": "Papi",
+   "spent_on": "2026-11-16",
+   "updated_at": "2026-11-16T07:42:39.199473+00:00"
   }
  ],
  "families": [
@@ -1024,8 +1046,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "032efde9-3083-4954-9127-f51bd04c0a7c",
@@ -1034,7 +1056,7 @@
    "optional": false,
    "position": 7,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:32:55.136247+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1144,9 +1166,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-07T20:49:47.473+00:00",
-   "bought_by": "Chips",
+   "bought": false,
+   "bought_at": null,
+   "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "efc405c5-760d-4737-a76f-8c8b64c358b6",
    "name": "Piadine",
@@ -1154,7 +1176,7 @@
    "optional": false,
    "position": 15,
    "quantity": null,
-   "updated_at": "2026-11-07T20:49:49.001361+00:00"
+   "updated_at": "2026-11-16T21:33:10.463856+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1279,8 +1301,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "3954155a-e69e-492f-b9a6-d113019bc377",
@@ -1289,7 +1311,7 @@
    "optional": false,
    "position": 24,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:33:24.943027+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1399,8 +1421,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "655270f8-f224-40a0-9e01-6fcd83a61a43",
@@ -1409,7 +1431,7 @@
    "optional": false,
    "position": 32,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:33:38.033178+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1489,8 +1511,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "c2042c26-8050-44b4-8a2d-ffb57c83865a",
@@ -1499,7 +1521,7 @@
    "optional": false,
    "position": 38,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:33:52.471467+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -1549,8 +1571,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "e3a56765-9ea2-4e04-8213-11224243c07b",
@@ -1559,7 +1581,7 @@
    "optional": false,
    "position": 42,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:34:01.651392+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2299,8 +2321,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "e0a6a188-caab-4b84-871b-f6d6477cdd2c",
@@ -2309,7 +2331,7 @@
    "optional": false,
    "position": 92,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:34:36.623424+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2404,8 +2426,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "fa811469-5152-4c49-a391-8bf455a19469",
@@ -2414,7 +2436,7 @@
    "optional": false,
    "position": 99,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:34:41.36174+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2464,8 +2486,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "fa049dc4-df9e-4347-b98c-1638ec06593e",
@@ -2474,7 +2496,7 @@
    "optional": false,
    "position": 103,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:34:47.084271+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2584,8 +2606,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "c0a0d195-7046-4695-a264-1784374fada7",
@@ -2594,7 +2616,7 @@
    "optional": false,
    "position": 111,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:35:08.995457+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2621,10 +2643,10 @@
    "id": "d52d9e12-3d46-4e9a-aa8c-31c54d66ca85",
    "name": "Sedano verde",
    "name_key": "sedano verde",
-   "optional": true,
+   "optional": false,
    "position": 113,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:35:16.245721+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2756,10 +2778,10 @@
    "id": "33eb295e-52a9-4632-aac8-0c359451a11f",
    "name": "Ceci",
    "name_key": "ceci",
-   "optional": true,
+   "optional": false,
    "position": 122,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:35:23.725065+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2839,17 +2861,17 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "54ee12e3-4515-47c6-a87d-224157d2c5d8",
    "name": "Pesce",
    "name_key": "pesce",
-   "optional": true,
+   "optional": false,
    "position": 128,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:35:37.276789+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -2906,10 +2928,10 @@
    "id": "3a7ae319-1d00-4358-bd58-a4ccc9e61da0",
    "name": "Bon roll",
    "name_key": "bon roll",
-   "optional": true,
+   "optional": false,
    "position": 132,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:35:41.883961+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -3139,8 +3161,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "6e7fd92e-1fff-4855-ba70-2f214380d561",
@@ -3149,7 +3171,7 @@
    "optional": true,
    "position": 148,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:35:55.407462+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -3544,8 +3566,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "bd6adc6a-7616-4fa9-bd9d-c77770fb5b5c",
@@ -3554,13 +3576,13 @@
    "optional": false,
    "position": 175,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:36:30.963017+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "eb415a7b-42b6-486f-b9e6-b70b6fe2a21f",
@@ -3569,7 +3591,7 @@
    "optional": true,
    "position": 176,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:36:35.660312+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -3769,9 +3791,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-16T21:32:34.904+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "eb277d16-8233-4f10-a2ed-0b34d73fbd6a",
    "name": "Olive",
@@ -3779,7 +3801,7 @@
    "optional": true,
    "position": 190,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:32:36.431832+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -3949,8 +3971,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "a3b6f9f8-2b4e-46b1-a51e-97d55a2a6a16",
@@ -3959,7 +3981,7 @@
    "optional": true,
    "position": 202,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:37:01.306712+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -4414,8 +4436,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "e7077b52-76ef-461c-a0cf-ba11eb325292",
@@ -4424,7 +4446,7 @@
    "optional": true,
    "position": 233,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:37:26.908512+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -4924,8 +4946,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "86a558ad-bd59-4e10-8876-fc54249829aa",
@@ -4934,7 +4956,7 @@
    "optional": false,
    "position": 267,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:38:02.435578+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5059,8 +5081,8 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": true,
-   "bought_at": "2026-11-06T07:06:58.55073+00:00",
+   "bought": false,
+   "bought_at": null,
    "bought_by": null,
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "0694694c-470e-4c8a-9ce7-4f530182b6b2",
@@ -5069,7 +5091,7 @@
    "optional": false,
    "position": 276,
    "quantity": null,
-   "updated_at": "2026-11-06T07:06:58.55073+00:00"
+   "updated_at": "2026-11-16T21:38:15.393393+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5681,10 +5703,10 @@
    "id": "fec41444-3404-4ef6-9fd3-30926bf2ad6f",
    "name": "Diavolina",
    "name_key": "diavolina",
-   "optional": true,
+   "optional": false,
    "position": 317,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-16T21:32:45.947642+00:00"
   }
  ],
  "tasks": [
