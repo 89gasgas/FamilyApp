@@ -77,6 +77,19 @@
    "until": null,
    "updated_at": "2026-11-08T12:09:45.779433+00:00",
    "who": "89gasgas@gmail.com"
+  },
+  {
+   "created_at": "2026-11-17T18:51:19.861+00:00",
+   "created_by": "GaS",
+   "day": "2026-12-12",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "228bc8b5-2dac-46a8-990d-1036ad05226f",
+   "remind": "none",
+   "repeat": "none",
+   "title": "Pranzo Cugi",
+   "until": null,
+   "updated_at": "2026-11-17T18:51:19.515182+00:00",
+   "who": "both"
   }
  ],
  "expense_categories": [
@@ -318,9 +331,9 @@
    "hidden": false,
    "icon": "🚗",
    "id": "0ee3c455-e43f-4ad8-ab9f-37aec82e2f7d",
-   "name": "Punto",
+   "name": "Auto sp. Straordinarie",
    "position": 5,
-   "updated_at": "2026-11-06T16:29:00.008288+00:00"
+   "updated_at": "2026-11-17T18:48:05.576435+00:00"
   },
   {
    "color": "#e6a700",
@@ -818,6 +831,72 @@
    "note": "Papi",
    "spent_on": "2026-11-16",
    "updated_at": "2026-11-16T07:42:39.199473+00:00"
+  },
+  {
+   "amount_cents": 8100,
+   "category_id": "0ee3c455-e43f-4ad8-ab9f-37aec82e2f7d",
+   "created_at": "2026-11-16T17:24:03.823+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "3a8845ef-eabe-4310-b333-e2194c6495e7",
+   "note": null,
+   "spent_on": "2026-11-16",
+   "updated_at": "2026-11-17T18:47:34.671946+00:00"
+  },
+  {
+   "amount_cents": 510,
+   "category_id": "17159453-3305-434a-8d6d-9a0944ea979d",
+   "created_at": "2026-11-17T13:14:28.127+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "653d0b42-648d-4669-94c9-c7d1a226ac50",
+   "note": "Treno",
+   "spent_on": "2026-11-17",
+   "updated_at": "2026-11-17T13:14:29.181384+00:00"
+  },
+  {
+   "amount_cents": 53002,
+   "category_id": "0ee3c455-e43f-4ad8-ab9f-37aec82e2f7d",
+   "created_at": "2026-11-17T13:53:27.133+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "cdbf467a-1a68-45d2-b146-80141a88ed5e",
+   "note": "Manutenzione e cambio gomme",
+   "spent_on": "2026-11-17",
+   "updated_at": "2026-11-17T13:53:28.432303+00:00"
+  },
+  {
+   "amount_cents": 480,
+   "category_id": "cd681b99-b264-4151-a80d-fc22e5e6009b",
+   "created_at": "2026-11-17T15:12:42.342+00:00",
+   "created_by": "Chips",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "ccb039da-99f1-4654-a658-ad20c6de6135",
+   "note": "Lidl",
+   "spent_on": "2026-11-17",
+   "updated_at": "2026-11-17T15:12:43.458719+00:00"
+  },
+  {
+   "amount_cents": 833,
+   "category_id": "4f86b7fa-d459-476c-91ee-c4c8ab5a5dc0",
+   "created_at": "2026-11-17T18:48:27.302+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "676e800e-7eb3-410e-b576-e1ed4da77a87",
+   "note": null,
+   "spent_on": "2026-11-17",
+   "updated_at": "2026-11-17T18:48:26.775822+00:00"
+  },
+  {
+   "amount_cents": 560,
+   "category_id": "17159453-3305-434a-8d6d-9a0944ea979d",
+   "created_at": "2026-11-17T18:48:46.929+00:00",
+   "created_by": "GaS",
+   "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
+   "id": "e2a7d87f-d8d2-42b0-9e4d-93e628da7725",
+   "note": null,
+   "spent_on": "2026-11-17",
+   "updated_at": "2026-11-17T18:48:46.295814+00:00"
   }
  ],
  "families": [
@@ -2321,9 +2400,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-17T15:00:21.689+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "e0a6a188-caab-4b84-871b-f6d6477cdd2c",
    "name": "Mele",
@@ -2331,7 +2410,7 @@
    "optional": false,
    "position": 92,
    "quantity": null,
-   "updated_at": "2026-11-16T21:34:36.623424+00:00"
+   "updated_at": "2026-11-17T15:00:22.734215+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5081,9 +5160,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-17T16:06:41.035+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "0694694c-470e-4c8a-9ce7-4f530182b6b2",
    "name": "Gatorade",
@@ -5091,7 +5170,7 @@
    "optional": false,
    "position": 276,
    "quantity": null,
-   "updated_at": "2026-11-16T21:38:15.393393+00:00"
+   "updated_at": "2026-11-17T16:06:42.345202+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5201,9 +5280,9 @@
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
    "added_by": "GaS",
-   "bought": false,
-   "bought_at": null,
-   "bought_by": null,
+   "bought": true,
+   "bought_at": "2026-11-17T16:06:46.303+00:00",
+   "bought_by": "Chips",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "9eaa1f80-d067-45f0-97f3-7ca0f5a978a6",
    "name": "Garze",
@@ -5211,7 +5290,7 @@
    "optional": true,
    "position": 284,
    "quantity": null,
-   "updated_at": "2026-11-06T07:52:56.286123+00:00"
+   "updated_at": "2026-11-17T16:06:47.555555+00:00"
   },
   {
    "added_at": "2026-11-06T07:06:58.55073+00:00",
@@ -5766,40 +5845,40 @@
    "assignee": "89gasgas@gmail.com",
    "created_at": "2026-11-06T18:20:10.238+00:00",
    "created_by": "GaS",
-   "done": false,
-   "done_at": null,
-   "done_by": null,
+   "done": true,
+   "done_at": "2026-11-17T18:51:31.757+00:00",
+   "done_by": "GaS",
    "due": "2026-11-13",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "e4ccc05d-eefb-43e3-9d84-3ea786d5330f",
    "title": "Macchina dal meccanico per gomme e revisione",
-   "updated_at": "2026-11-06T18:20:08.614463+00:00"
+   "updated_at": "2026-11-17T18:51:31.273963+00:00"
   },
   {
    "assignee": "89gasgas@gmail.com",
    "created_at": "2026-11-07T10:33:47.468+00:00",
    "created_by": "GaS",
-   "done": false,
-   "done_at": null,
-   "done_by": null,
+   "done": true,
+   "done_at": "2026-11-17T18:51:32.725+00:00",
+   "done_by": "GaS",
    "due": "2026-11-19",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "e2850351-55d4-4cd3-8f0b-82ae712b4cad",
    "title": "Reso gioco in posta",
-   "updated_at": "2026-11-07T10:33:52.993746+00:00"
+   "updated_at": "2026-11-17T18:51:32.177449+00:00"
   },
   {
    "assignee": "89gasgas@gmail.com",
    "created_at": "2026-11-08T12:11:38.496+00:00",
    "created_by": "GaS",
-   "done": false,
-   "done_at": null,
-   "done_by": null,
+   "done": true,
+   "done_at": "2026-11-17T18:51:29.563+00:00",
+   "done_by": "GaS",
    "due": "2026-11-09",
    "family_id": "496e6cf0-7604-4405-8efb-62ec3ed42aa4",
    "id": "ff1ab7cf-94fc-473a-aa4b-cfe20877c1fc",
    "title": "Chiedere al medico se mi dà mutua venerdì.",
-   "updated_at": "2026-11-08T12:11:53.093754+00:00"
+   "updated_at": "2026-11-17T18:51:29.13754+00:00"
   }
  ]
 }
