@@ -225,3 +225,12 @@ dialog .vform { text-align: left; margin-top: 0; }
   color: var(--ink); font-size: 12px; font-weight: 700; line-height: 22px; text-align: center; }
 #ev-dlg label small { font-weight: 400; color: var(--muted); }
 #ev-series { margin: 2px 0 0; }
+
+/* save/cancel at the top of forms, reachable with the keyboard open */
+.dlg-head { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; }
+.dlg-head h2 { margin: 0; }
+.dlg-head span { flex: 1; }
+.dlg-head .ghost { order: 1; }
+.dlg-head .primary { order: 2; }
+.dlg-head form { margin: 0; }
+dialog .dlg-actions:not(:has(button:not([hidden]))) { display: none; }

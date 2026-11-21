@@ -123,22 +123,19 @@
 
   <dialog id="td-edit">
     <form method="dialog" id="td-edit-form">
-      <h2>Attività</h2>
+      <div class="dlg-head"><h2>Attività</h2><span></span><button value="save" class="primary">Salva</button><button value="cancel" formnovalidate class="ghost">Annulla</button></div>
       <label>Testo<input id="te-title" required></label>
       <label>Chi<select id="te-who"></select></label>
       <label>Quando<input type="date" id="te-due"></label>
       <div class="dlg-actions">
         <button type="button" id="te-delete" class="ghost danger">Elimina</button>
-        <span></span>
-        <button value="cancel" formnovalidate class="ghost">Annulla</button>
-        <button value="save" class="primary">Salva</button>
       </div>
     </form>
   </dialog>
 
   <dialog id="ex-dlg">
     <form method="dialog" id="ex-form" class="vform">
-      <h2 id="ex-title">Nuova spesa</h2>
+      <div class="dlg-head"><h2 id="ex-title">Nuova spesa</h2><span></span><button value="save" class="primary">Salva</button><button value="cancel" formnovalidate class="ghost">Annulla</button></div>
       <label>Importo (€)<input id="ex-amount" class="big-amount" inputmode="decimal" autocomplete="off" placeholder="0,00" required></label>
       <label>Categoria<select id="ex-cat" required></select></label>
       <label>Nota<input id="ex-note" placeholder="facoltativa" autocomplete="off"></label>
@@ -146,16 +143,13 @@
       <p id="ex-err" class="hint danger" hidden>Scrivi un importo maggiore di zero.</p>
       <div class="dlg-actions">
         <button type="button" id="ex-delete" class="ghost danger">Elimina</button>
-        <span></span>
-        <button value="cancel" formnovalidate class="ghost">Annulla</button>
-        <button value="save" class="primary">Salva</button>
       </div>
     </form>
   </dialog>
 
   <dialog id="ev-dlg">
     <form method="dialog" id="ev-form" class="vform">
-      <h2 id="ev-h">Nuovo evento</h2>
+      <div class="dlg-head"><h2 id="ev-h">Nuovo evento</h2><span></span><button value="save" class="primary">Salva</button><button value="cancel" formnovalidate class="ghost">Annulla</button></div>
       <label>Titolo<input id="ev-title" autocomplete="off" enterkeyhint="done"></label>
       <label>Giorno<input type="date" id="ev-day" required></label>
       <label>Fino al <small>(facoltativo, per più giorni)</small><input type="date" id="ev-until"></label>
@@ -170,9 +164,6 @@
       <p id="ev-err" class="hint danger" hidden></p>
       <div class="dlg-actions">
         <button type="button" id="ev-delete" class="ghost danger">Elimina</button>
-        <span></span>
-        <button value="cancel" formnovalidate class="ghost">Annulla</button>
-        <button value="save" class="primary">Salva</button>
       </div>
     </form>
   </dialog>
@@ -189,13 +180,11 @@
   </dialog>
 
   <dialog id="cats-dlg">
-    <h2>Categorie</h2>
+    <div class="dlg-head"><h2>Categorie</h2><span></span><form method="dialog"><button class="primary">Fatto</button></form></div>
     <p class="hint">Tocca l'icona o il nome per cambiarli. Le categorie con spese si possono solo nascondere.</p>
     <ul id="cats-list" class="cats-list"></ul>
     <div class="dlg-actions">
       <button type="button" id="cats-add" class="ghost">+ Nuova categoria</button>
-      <span></span>
-      <form method="dialog"><button class="primary">Fatto</button></form>
     </div>
   </dialog>
 
