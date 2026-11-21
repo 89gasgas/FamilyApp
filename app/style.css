@@ -234,3 +234,39 @@ dialog .vform { text-align: left; margin-top: 0; }
 .dlg-head .primary { order: 2; }
 .dlg-head form { margin: 0; }
 dialog .dlg-actions:not(:has(button:not([hidden]))) { display: none; }
+
+/* ---------- reflections (RI) ---------- */
+.rf-tools { display: flex; align-items: center; gap: 8px; margin: 4px 0 8px; }
+#rf-q { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 5px 10px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.rf-tagbar { display: flex; align-items: center; gap: 6px; margin: 0 2px 8px; font-size: 14px; color: var(--muted); }
+.rf-tagbar[hidden] { display: none; }
+.rf-tagbar b { color: var(--accent); }
+.rf-tagbar .ghost { padding: 2px 8px; }
+.rf-card { background: var(--card); border-radius: 12px; border-left: 4px solid var(--line); padding: 12px 12px 8px 14px;
+  margin-bottom: 8px; }
+.rf-card.flash { animation: flash .9s ease; }
+.rf-body { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 17px; line-height: 1.45; }
+.rf-body.clamp { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.rf-more { background: none; color: var(--accent); padding: 4px 0 0; font-size: 14px; font-weight: 600; }
+.rf-by { margin: 8px 0 0; color: var(--muted); font-style: italic; font-size: 15px; }
+.rf-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.rf-tag { background: var(--bg); color: var(--accent); border: 1px solid var(--line); border-radius: 12px;
+  padding: 2px 9px; font-size: 13px; }
+.rf-tag.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.rf-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.rf-foot .who { min-width: 22px; height: 22px; padding: 0 5px; border-radius: 11px; background: var(--line);
+  color: var(--ink); font-size: 12px; font-weight: 700; line-height: 22px; text-align: center; }
+.rf-gap { flex: 1; }
+.rf-heart { background: none; padding: 4px 6px; font-size: 18px; line-height: 1; }
+span.rf-heart { cursor: default; }
+.rf-edit { background: none; padding: 4px 6px; font-size: 15px; line-height: 1; filter: grayscale(1); opacity: .45; }
+.rf-daily h3 { font-size: 14px; color: var(--accent); margin: 4px 2px 6px; }
+.rf-card.daily { background: color-mix(in srgb, var(--accent) 9%, var(--card)); }
+.vform textarea { font: inherit; font-size: 16px; padding: 8px 10px; border-radius: 10px; resize: vertical;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); min-height: 120px; }
+.rf-tagsug { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
+.rf-tagsug:empty { display: none; }
+#rf-dlg { max-height: 92vh; overflow-y: auto; }
+#rf-dlg label small { font-weight: 400; color: var(--muted); }
+.lvl-switch.ri { margin-top: 10px; }

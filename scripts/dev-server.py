@@ -10,6 +10,8 @@ APP = os.path.join(ROOT, "app")
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"  # keep-alive: the in-app browser dropped files over many short connections
+
     def __init__(self, *a, **k):
         super().__init__(*a, directory=APP, **k)
 

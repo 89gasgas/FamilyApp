@@ -1,4 +1,4 @@
-/* FamilyApp: shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06), expenses (CO-01…CO-08), calendar (CA-01…CA-09). */
+/* FamilyApp: shopping list (SP-01…SP-09), to-dos (TD-01…TD-07), notifications (NT-01…NT-06), expenses (CO-01…CO-08), calendar (CA-01…CA-09), reflections (RI-01…RI-08). */
 (() => {
   'use strict';
   // If the Supabase library failed to load (interrupted download), reload once instead of a blank page.
@@ -26,6 +26,8 @@
   let expenses = new Map(); // id -> expense (CO)
   let cats = new Map();     // id -> expense category (CO)
   let events = new Map();   // id -> calendar event (CA)
+  let reflections = new Map(); // id -> reflection (RI)
+  let hearts = new Map();   // id -> heart on a reflection (RI-05)
   let members = [];         // [{ email, display_name }] of my family
   let queue = [];           // pending changes, replayed when online
   let channel = null;
@@ -39,7 +41,8 @@
   function save() {
     try {
       localStorage.setItem(storeKey(), JSON.stringify({ items: [...items.values()], tasks: [...tasks.values()],
-        expenses: [...expenses.values()], cats: [...cats.values()], events: [...events.values()], members, queue }));
+        expenses: [...expenses.values()], cats: [...cats.values()], events: [...events.values()],
+        reflections: [...reflections.values()], hearts: [...hearts.values()], members, queue }));
     } catch (e) {}
   }
   function loadLocal() {
@@ -51,6 +54,8 @@
         expenses = new Map((raw.expenses || []).map((i) => [i.id, i]));
         cats = new Map((raw.cats || []).map((i) => [i.id, i]));
         events = new Map((raw.events || []).map((i) => [i.id, i]));
+        reflections = new Map((raw.reflections || []).map((i) => [i.id, i]));
+        hearts = new Map((raw.hearts || []).map((i) => [i.id, i]));
         members = raw.members || [];
         queue = raw.queue || [];
       }
@@ -110,6 +115,7 @@
     renderTodo();
     renderMoney();
     renderCal();
+    renderRef();
     renderSync();
   }
   function renderSync() {
@@ -124,9 +130,10 @@
   }
 
   // ---------- local changes ----------
-  const SHOP = 'shopping_items', TASKS = 'tasks', EXP = 'expenses', CATS = 'expense_categories', EVT = 'events';
+  const SHOP = 'shopping_items', TASKS = 'tasks', EXP = 'expenses', CATS = 'expense_categories', EVT = 'events',
+    REF = 'reflections', HRT = 'reflection_hearts';
   const tableOf = (op) => op.t || SHOP; // ops saved before TD have no table: shopping
-  const mapOf = (t) => ({ [TASKS]: tasks, [EXP]: expenses, [CATS]: cats, [EVT]: events }[t] || items);
+  const mapOf = (t) => ({ [TASKS]: tasks, [EXP]: expenses, [CATS]: cats, [EVT]: events, [REF]: reflections, [HRT]: hearts }[t] || items);
   function setFields(id, fields, t = SHOP) {
     const it = mapOf(t).get(id);
     if (!it) return;
@@ -199,15 +206,17 @@
   }
 
   async function fetchAll() {
-    const [a, b, e, c, v, m] = await Promise.all([rows(SHOP), rows(TASKS), rows(EXP), rows(CATS), rows(EVT),
-      sb.from('members').select('email,display_name').eq('family_id', me.family_id)]);
-    const error = a.error || b.error || e.error || c.error || v.error || m.error;
+    const [a, b, e, c, v, r, h, m] = await Promise.all([rows(SHOP), rows(TASKS), rows(EXP), rows(CATS), rows(EVT),
+      rows(REF), rows(HRT), sb.from('members').select('email,display_name').eq('family_id', me.family_id)]);
+    const error = a.error || b.error || e.error || c.error || v.error || r.error || h.error || m.error;
     if (error) { if (isNetErr(error)) setOnline(false); return; }
     items = applyPending(new Map(a.data.map((i) => [i.id, i])), SHOP);
     tasks = applyPending(new Map(b.data.map((i) => [i.id, i])), TASKS);
     expenses = applyPending(new Map(e.data.map((i) => [i.id, i])), EXP);
     cats = applyPending(new Map(c.data.map((i) => [i.id, i])), CATS);
     events = applyPending(new Map(v.data.map((i) => [i.id, i])), EVT);
+    reflections = applyPending(new Map(r.data.map((i) => [i.id, i])), REF);
+    hearts = applyPending(new Map(h.data.map((i) => [i.id, i])), HRT);
     members = m.data.sort((x, y) => x.display_name.localeCompare(y.display_name));
     save(); render();
   }
@@ -268,7 +277,7 @@
           if (p.eventType === 'DELETE') items.delete(id); else items.set(id, p.new);
           save(); render();
         });
-    for (const t of [TASKS, EXP, CATS, EVT]) {
+    for (const t of [TASKS, EXP, CATS, EVT, REF, HRT]) {
       channel.on('postgres_changes',
         { event: '*', schema: 'public', table: t, filter: 'family_id=eq.' + me.family_id },
         (p) => { // TD-03, CO-06 real time
@@ -1151,10 +1160,286 @@
     commit();
   });
 
+  // ---------- reflections (RI-01…RI-08) ----------
+  let rfWho = 'all', rfTag = null, rfQ = '', rfEditing = null, rfPending = null;
+  const rfOpen = new Set(); // long texts the reader expanded
+  try { const w = localStorage.getItem('fa.rfWho'); if (['all', 'me', 'other'].includes(w)) rfWho = w; } catch (e) {}
+  const RF_LONG = (r) => r.body.length > 300 || r.body.split('\n').length > 6;
+  const cleanTags = (s) => [...new Set(s.split(',').map((t) => t.trim().replace(/^#+/, '').replace(/\s+/g, ' ').toLowerCase())
+    .filter(Boolean))];
+  const others = () => members.filter((m) => m.email !== me.email);
+  const heartsOf = (id) => [...hearts.values()].filter((h) => h.reflection_id === id);
+  function shortDate(iso) {
+    const d = new Date(iso);
+    return `${d.getDate()} ${MO[d.getMonth()]}` + (d.getFullYear() !== new Date().getFullYear() ? ` ${d.getFullYear()}` : '');
+  }
+  function allTags() { // most used first
+    const n = new Map();
+    for (const r of reflections.values()) for (const t of r.tags || []) n.set(t, (n.get(t) || 0) + 1);
+    return [...n.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'it')).map(([t]) => t);
+  }
+
+  function rfCard(r, key) { // RI-03
+    const el = document.createElement('article');
+    el.className = 'rf-card';
+    el.dataset.id = r.id;
+    el.style.borderLeftColor = whoColor(r.created_by);
+    const body = document.createElement('p');
+    body.className = 'rf-body';
+    body.textContent = r.body;
+    el.append(body);
+    if (RF_LONG(r)) {
+      const open = rfOpen.has(key);
+      body.classList.toggle('clamp', !open);
+      const more = document.createElement('button');
+      more.type = 'button';
+      more.className = 'rf-more';
+      more.dataset.key = key;
+      more.textContent = open ? 'Mostra meno' : 'Leggi tutto';
+      el.append(more);
+    }
+    if ((r.author || '').trim() || (r.source || '').trim()) {
+      const by = document.createElement('p');
+      by.className = 'rf-by';
+      by.append('— ' + [r.author, r.source].map((s) => (s || '').trim()).filter(Boolean).join(', '));
+      el.append(by);
+    }
+    if ((r.tags || []).length) {
+      const tags = document.createElement('div');
+      tags.className = 'rf-tags';
+      for (const t of r.tags) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'rf-tag' + (t === rfTag ? ' on' : '');
+        b.dataset.tag = t;
+        b.textContent = '#' + t;
+        tags.append(b);
+      }
+      el.append(tags);
+    }
+    const foot = document.createElement('div');
+    foot.className = 'rf-foot';
+    const who = document.createElement('span');
+    who.className = 'who';
+    who.textContent = whoShort(r.created_by);
+    who.title = nameOf(r.created_by);
+    const when = document.createElement('span');
+    when.className = 'rf-when';
+    when.textContent = shortDate(r.created_at);
+    const gap = document.createElement('span');
+    gap.className = 'rf-gap';
+    foot.append(who, when, gap);
+    const hs = heartsOf(r.id);
+    if (r.created_by === me.email) { // RI-05: on mine I only see the hearts I got
+      if (hs.length) {
+        const h = document.createElement('span');
+        h.className = 'rf-heart on';
+        h.textContent = '❤️';
+        h.title = 'Piace a ' + hs.map((x) => nameOf(x.email)).join(' e ');
+        foot.append(h);
+      }
+      const ed = document.createElement('button'); // RI-06
+      ed.type = 'button';
+      ed.className = 'rf-edit';
+      ed.textContent = '✏️';
+      ed.setAttribute('aria-label', 'Modifica');
+      foot.append(ed);
+    } else {
+      const on = hs.some((x) => x.email === me.email);
+      const h = document.createElement('button');
+      h.type = 'button';
+      h.className = 'rf-heart' + (on ? ' on' : '');
+      h.textContent = on ? '❤️' : '🤍';
+      h.setAttribute('aria-pressed', on ? 'true' : 'false');
+      h.setAttribute('aria-label', on ? 'Togli il cuore' : 'Metti un cuore');
+      foot.append(h);
+    }
+    el.append(foot);
+    return el;
+  }
+
+  function rfVisible() { // RI-04: who + tag + words, all together
+    const q = fold(rfQ);
+    return [...reflections.values()].filter((r) =>
+      (rfWho === 'all' || (rfWho === 'me') === (r.created_by === me.email)) &&
+      (!rfTag || (r.tags || []).includes(rfTag)) &&
+      (!q || fold([r.body, r.author, r.source].filter(Boolean).join(' ')).includes(q)))
+      .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+  }
+
+  function renderRef() {
+    if (!me) return;
+    const oth = others();
+    const labels = { all: 'Tutte', me: 'Mie', other: oth.length === 1 ? 'Di ' + oth[0].display_name : 'Degli altri' };
+    $('rf-who').replaceChildren(...['all', 'me', 'other'].map((v) => {
+      const b = Object.assign(document.createElement('button'), { type: 'button', textContent: labels[v] });
+      b.dataset.v = v;
+      b.classList.toggle('on', v === rfWho);
+      return b;
+    }));
+    $('rf-tagbar').hidden = !rfTag;
+    $('rf-tagname').textContent = rfTag ? '#' + rfTag : '';
+    // RI-07: the reflection of the day stays on top for the whole day (yesterday's until the new one comes out)
+    const t0 = today(), y = ymd(new Date(Date.now() - 86400000));
+    const daily = [...reflections.values()].filter((r) => r.daily_on === t0 || r.daily_on === y)
+      .sort((a, b) => b.daily_on.localeCompare(a.daily_on))[0];
+    $('rf-daily').hidden = !daily;
+    if (daily) {
+      const h = document.createElement('h3');
+      h.textContent = daily.daily_on === t0 ? '💭 La riflessione di oggi' : '💭 La riflessione di ieri';
+      const c = rfCard(daily, 'd:' + daily.id);
+      c.classList.add('daily');
+      $('rf-daily').replaceChildren(h, c);
+    }
+    const list = rfVisible();
+    $('rf-list').replaceChildren(...list.map((r) => rfCard(r, r.id)));
+    const any = reflections.size > 0;
+    $('rf-empty').hidden = list.length > 0;
+    $('rf-empty').textContent = !any ? 'Ancora nessuna riflessione. Scrivi la prima!'
+      : 'Nessuna riflessione con questi filtri.';
+    if (rfPending && reflections.has(rfPending) && view === 'ref') { // opened from a notification
+      const id = rfPending;
+      rfPending = null;
+      setTimeout(() => showRef(id), 0);
+    }
+  }
+  function renderRefList() { // typing in the search box: only the list changes
+    const list = rfVisible();
+    $('rf-list').replaceChildren(...list.map((r) => rfCard(r, r.id)));
+    $('rf-empty').hidden = list.length > 0;
+    $('rf-empty').textContent = reflections.size ? 'Nessuna riflessione con questi filtri.'
+      : 'Ancora nessuna riflessione. Scrivi la prima!';
+  }
+
+  $('rf-who').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    rfWho = b.dataset.v;
+    try { localStorage.setItem('fa.rfWho', rfWho); } catch (err) {}
+    renderRef();
+  });
+  $('rf-q').addEventListener('input', (e) => { rfQ = e.target.value; renderRefList(); });
+  $('rf-tagclear').addEventListener('click', () => { rfTag = null; renderRef(); });
+  $('rf-add').addEventListener('click', () => openRef(null));
+  $('ref').addEventListener('click', (e) => {
+    const t = e.target.closest('.rf-tag');
+    if (t) { rfTag = rfTag === t.dataset.tag ? null : t.dataset.tag; renderRef(); window.scrollTo({ top: 0 }); return; }
+    const m = e.target.closest('.rf-more');
+    if (m) { if (rfOpen.has(m.dataset.key)) rfOpen.delete(m.dataset.key); else rfOpen.add(m.dataset.key); renderRef(); return; }
+    const card = e.target.closest('.rf-card');
+    if (!card) return;
+    if (e.target.closest('.rf-edit')) { openRef(card.dataset.id); return; }
+    if (e.target.closest('button.rf-heart')) toggleHeart(card.dataset.id);
+  });
+
+  function toggleHeart(id) { // RI-05
+    const r = reflections.get(id);
+    if (!r || r.created_by === me.email) return;
+    const mine = heartsOf(id).find((h) => h.email === me.email);
+    if (mine) {
+      hearts.delete(mine.id);
+      queue.push({ op: 'del', t: HRT, id: mine.id });
+    } else {
+      const row = { id: crypto.randomUUID(), family_id: me.family_id, reflection_id: id, email: me.email,
+        created_at: new Date().toISOString() };
+      hearts.set(row.id, row);
+      queue.push({ op: 'add', t: HRT, id: row.id, row: { ...row } });
+    }
+    commit();
+  }
+
+  function showRef(id) { // opened from a notification: that reflection, open, in sight
+    const r = reflections.get(id);
+    if (!r) { rfPending = id; return; } // not arrived yet: after the next download
+    rfTag = null; rfQ = ''; $('rf-q').value = '';
+    if (rfWho !== 'all' && (rfWho === 'me') !== (r.created_by === me.email)) rfWho = 'all';
+    rfOpen.add(id);
+    renderRef();
+    const el = document.querySelector(`#rf-list .rf-card[data-id="${id}"]`);
+    if (el) { el.scrollIntoView({ block: 'center' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  }
+
+  // ---------- add / edit (RI-01, RI-02, RI-06) ----------
+  function renderTagSuggest() {
+    const parts = $('rf-tags').value.split(',');
+    const cur = parts[parts.length - 1].trim().replace(/^#+/, '').toLowerCase();
+    const have = new Set(cleanTags(parts.slice(0, -1).join(',')));
+    const found = allTags().filter((t) => !have.has(t) && (!cur || fold(t).includes(fold(cur))) && t !== cur).slice(0, 8);
+    $('rf-tagsug').replaceChildren(...found.map((t) => Object.assign(document.createElement('button'),
+      { type: 'button', className: 'rf-tag', textContent: '#' + t })));
+    [...$('rf-tagsug').children].forEach((b, i) => { b.dataset.tag = found[i]; });
+  }
+  $('rf-tags').addEventListener('input', renderTagSuggest);
+  $('rf-tagsug').addEventListener('pointerdown', (e) => e.preventDefault()); // keep the keyboard open
+  $('rf-tagsug').addEventListener('click', (e) => {
+    const b = e.target.closest('.rf-tag');
+    if (!b) return;
+    const parts = $('rf-tags').value.split(',');
+    parts[parts.length - 1] = ' ' + b.dataset.tag;
+    $('rf-tags').value = parts.map((p) => p.trim()).filter(Boolean).join(', ') + ', ';
+    renderTagSuggest();
+  });
+
+  function openRef(id) {
+    const r = id && reflections.get(id);
+    if (r && r.created_by !== me.email) return; // RI-06: only the author
+    rfEditing = r ? r.id : null;
+    $('rf-h').textContent = r ? 'Modifica riflessione' : 'Nuova riflessione';
+    $('rf-body').value = r ? r.body : '';
+    $('rf-author').value = r ? r.author || '' : '';
+    $('rf-source').value = r ? r.source || '' : '';
+    $('rf-tags').value = r && r.tags.length ? r.tags.join(', ') + ', ' : '';
+    const authors = [...new Set([...reflections.values()].map((x) => (x.author || '').trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b, 'it'));
+    $('rf-authors').replaceChildren(...authors.map((a) => Object.assign(document.createElement('option'), { value: a })));
+    renderTagSuggest();
+    $('rf-delete').hidden = !r;
+    $('rf-err').hidden = true;
+    $('rf-dlg').showModal();
+    if (!r) setTimeout(() => $('rf-body').focus(), 50);
+  }
+  $('rf-form').addEventListener('submit', (e) => {
+    if (!e.submitter || e.submitter.value !== 'save') { rfEditing = null; return; }
+    const tidy = (s) => s.trim().replace(/[ \t]+/g, ' ') || null;
+    const f = { body: $('rf-body').value.replace(/\s+$/, '').replace(/^\s*\n/, ''), author: tidy($('rf-author').value),
+      source: tidy($('rf-source').value), tags: cleanTags($('rf-tags').value) };
+    if (!f.body.trim()) {
+      e.preventDefault();
+      $('rf-err').textContent = 'Scrivi il testo della riflessione.';
+      $('rf-err').hidden = false;
+      $('rf-body').focus();
+      return;
+    }
+    const old = rfEditing && reflections.get(rfEditing);
+    if (old) {
+      const diff = {};
+      for (const k of ['body', 'author', 'source']) if (f[k] !== (old[k] ?? null)) diff[k] = f[k];
+      if (f.tags.join('\n') !== (old.tags || []).join('\n')) diff.tags = f.tags;
+      if (Object.keys(diff).length) setFields(old.id, diff, REF);
+    } else {
+      const row = { id: crypto.randomUUID(), family_id: me.family_id, ...f, created_by: me.email, daily_on: null,
+        created_at: new Date().toISOString() };
+      reflections.set(row.id, row);
+      queue.push({ op: 'add', t: REF, id: row.id, row: { ...row } });
+      commit();
+    }
+    rfEditing = null;
+  });
+  $('rf-delete').addEventListener('click', () => {
+    const r = reflections.get(rfEditing);
+    if (!r || !confirm('Eliminare questa riflessione?')) return;
+    reflections.delete(r.id);
+    for (const h of heartsOf(r.id)) hearts.delete(h.id); // the server removes them with it
+    queue.push({ op: 'del', t: REF, id: r.id });
+    rfEditing = null;
+    $('rf-dlg').close('cancel');
+    commit();
+  });
+
   // ---------- notifications (NT-01…NT-06) ----------
   const pushOk = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
-  const NT_DEFAULT = { shop: 'none', todo: 'mine', morning: true, cal: true };
-  const TABS = ['list', 'todo', 'cal', 'money'];
+  const NT_DEFAULT = { shop: 'none', todo: 'mine', morning: true, cal: true, ri_new: true, ri_heart: true, ri_daily: true };
+  const TABS = ['list', 'todo', 'cal', 'money', 'ref'];
   const b64uBytes = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)),
     (c) => c.charCodeAt(0));
   const permission = () => (pushOk ? Notification.permission : 'unsupported');
@@ -1208,6 +1493,7 @@
       for (const b of seg.children) b.classList.toggle('on', b.dataset.v === p[seg.dataset.key]);
     $('nt-morning').checked = !!p.morning;
     $('nt-cal').checked = p.cal !== false;
+    for (const k of ['ri_new', 'ri_heart', 'ri_daily']) $('nt-' + k).checked = p[k] !== false;
     $('nt-status').textContent = {
       granted: 'Attive su questo telefono. Scegli cosa ricevere:',
       default: 'Non ancora attive su questo telefono.',
@@ -1262,6 +1548,8 @@
   });
   $('nt-morning').addEventListener('change', (e) => saveNotify({ morning: e.target.checked }));
   $('nt-cal').addEventListener('change', (e) => saveNotify({ cal: e.target.checked }));
+  for (const k of ['ri_new', 'ri_heart', 'ri_daily'])
+    $('nt-' + k).addEventListener('change', (e) => saveNotify({ [k]: e.target.checked }));
   $('nt-test').addEventListener('click', async () => {
     await pushRegister(false);
     const { error } = await sb.rpc('push_test');
@@ -1271,6 +1559,7 @@
     const tab = e.data && e.data.tab;
     if (me && TABS.includes(tab)) { show(tab); try { localStorage.setItem('fa.tab', tab); } catch (err) {} }
     if (me && tab === 'cal' && /^\d{4}-\d\d-\d\d$/.test(e.data.day || '')) showDay(e.data.day);
+    if (me && tab === 'ref' && e.data.ref) showRef(e.data.ref);
   });
 
   // ---------- start (SP-01) ----------
@@ -1313,6 +1602,7 @@
     if (TABS.includes(asked)) {
       tab = asked;
       if (asked === 'cal' && /^\d{4}-\d\d-\d\d$/.test(qs.get('day') || '')) showDay(qs.get('day'));
+      if (asked === 'ref' && qs.get('ref')) rfPending = qs.get('ref'); // shown once the list is drawn
       try { localStorage.setItem('fa.tab', tab); } catch (e) {}
       history.replaceState(null, '', location.pathname);
     }
@@ -1324,7 +1614,8 @@
     pushRegister(false); // keeps this phone registered (the address can change over time)
   }
 
-  window.FA = { items: () => [...items.values()], tasks: () => [...tasks.values()], events: () => [...events.values()], queue: () => queue, flush, fetchAll };
+  window.FA = { items: () => [...items.values()], tasks: () => [...tasks.values()], events: () => [...events.values()],
+    reflections: () => [...reflections.values()], hearts: () => [...hearts.values()], queue: () => queue, flush, fetchAll };
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   start();
 })();

@@ -41,6 +41,7 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
 4. Calendario e ricorrenze, fatto in casa senza Google (CA-01…CA-09 approvate) ✅ pubblicato, da collaudare dal telefono. Decisioni di GaS: viste Agenda + Mese, solo giorno e titolo, promemoria scelto per evento, le cose di Da fare con data compaiono nel calendario
 5. Spese del mese (CO-01…CO-08, solo uscite, stile Monefy) ✅ pubblicate, da collaudare dal telefono
 6. ~~Ricorrenze e promemoria~~ (unite al Calendario)
+6b. Riflessioni (RI-01…RI-08 approvate il 21 nov 2026) ✅ pubblicate, da collaudare dal telefono
 7. Liste libere (film, libri…)
 8. Archivio documenti
 9. Miglioramenti
@@ -89,6 +90,13 @@ Vincoli del piano Free di Supabase da gestire: pausa dopo 7 giorni di inattivit�
   - Promemoria: `private.push_calendar()` ogni ora (cron `fa-calendar`): alle 8 "📅 Oggi", alle 20 "📅 Domani", a chi è coinvolto; interruttore `cal` nella rotella. La notifica apre il giorno nel Mese.
   - Le cose di Da fare con data compaiono nel calendario (le scadute su Oggi nell'Agenda). Backup e `restore.py` includono `events`.
   - Provato sul PC con le due utenti di prova (realtime, offline, promemoria simulati alle 20 e alle 8). Dati di prova lasciati nella famiglia di prova.
+- [x] **Ritocchi (8–21 nov 2026):** spesa con ✏️ per rinominare un prodotto direttamente nella riga; 🏷️ "se in offerta" a sinistra e più piccola; nel calendario le righe degli eventi uguali a quelle delle cose da fare; nei moduli Salva e Annulla in alto accanto al titolo (Elimina resta in fondo), così si salva con la tastiera aperta.
+- [x] **Incremento 6: Riflessioni pubblicate (21 nov 2026)** (RI-01…RI-08 approvate da GaS).
+  - Quinta scheda 💭 Riflessioni: testo (anche lungo, "Leggi tutto"), autore e fonte facoltativi, tag liberi suggeriti; filtri Tutte/Mie/Di Chips + tag + ricerca; ❤️ sulle riflessioni dell'altro; ognuno modifica/elimina solo le sue; tutte visibili a entrambi.
+  - Tabelle `reflections` e `reflection_hearts` (`supabase/012_riflessioni.sql`), RLS: lettura famiglia, scrittura solo l'autore (`created_by` = email); cuore solo proprio e non sulle proprie.
+  - Notifiche (interruttori `ri_new`, `ri_heart`, `ri_daily` nella rotella, accese di base): nuova dall'altro, ❤️ ricevuto, "La riflessione di oggi" alle 8 (cron `fa-reflection`, `private.push_reflection_daily`: stessa per tutti, prima quelle mai uscite; colonna `daily_on`, card in cima alla scheda). La notifica apre la scheda su quella riflessione.
+  - Backup e `restore.py` includono le due tabelle. Provato sul PC con le due utenti di prova (realtime, offline, cuori, filtri, permessi rifiutati dal server, riflessione del giorno forzata). Notifiche vere non provate (nel browser del PC sono bloccate).
+  - `scripts/dev-server.py` ora usa HTTP/1.1: il browser di prova perdeva `app.js` o `supabase.js` al caricamento.
   - Database `supabase/009_spese.sql`: tabelle `expense_categories` (nome, emoji, colore, ordine, nascosta) ed `expenses` (importo in centesimi, nota, data, chi l'ha inserita), RLS per famiglia, tempo reale; 17 categorie iniziali per ogni famiglia (Luna = il gatto 🐱, Pupits = i bimbi 🧸, Punto = la macchina 🚗). Backup e `scripts/restore.py` includono le spese.
   - Nell'app: terza scheda 💶 Spese con anello colorato, icone delle categorie intorno (tocco = nuova spesa: importo, categoria, nota, data), totale al centro, elenco per categoria con percentuale; frecce ‹ mese › e Mese/Anno; tocco su una categoria = sue spese, tocco su una spesa = modifica/elimina; ✏️ Categorie (icona, nome, colore, ordine, nascondi; eliminabile solo se senza spese); ⬇️ Esporta per Excel (CSV con punto e virgola e virgola decimale).
   - Collaudo locale con GaS e Chips di prova ✅: aggiunta, totale mese e anno, mese precedente, dettaglio, modifica, eliminazione, categorie (rinomina, nascondi, sposta, aggiungi, elimina), Chips vede subito le spese di GaS e viceversa, spesa offline sincronizzata, export, backup e ripristino. Non provati sul PC: il download sul telefono e la tastiera numerica di Android.

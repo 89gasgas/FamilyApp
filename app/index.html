@@ -112,6 +112,19 @@
       <ul id="mo-list" class="items"></ul>
     </section>
 
+    <section id="ref" hidden>
+      <div id="rf-daily" class="rf-daily" hidden></div>
+      <p class="mo-add"><button type="button" id="rf-add" class="ghost">+ Aggiungi riflessione</button></p>
+      <div class="rf-tools">
+        <span class="seg mini" id="rf-who"></span>
+        <input type="search" id="rf-q" placeholder="🔍 Cerca" autocomplete="off" enterkeyhint="search" aria-label="Cerca">
+      </div>
+      <p id="rf-tagbar" class="rf-tagbar" hidden>Solo <b id="rf-tagname"></b>
+        <button type="button" id="rf-tagclear" class="ghost" aria-label="Togli il filtro">✕</button></p>
+      <div id="rf-list"></div>
+      <p id="rf-empty" class="hint center" hidden></p>
+    </section>
+
   </main>
 
   <nav id="tabs" class="tabs" hidden>
@@ -119,6 +132,7 @@
     <button type="button" data-tab="todo" class="tab">✓<span>Da fare</span><b id="td-badge" class="badge" hidden></b></button>
     <button type="button" data-tab="cal" class="tab">📅<span>Calendario</span></button>
     <button type="button" data-tab="money" class="tab">💶<span>Spese</span></button>
+    <button type="button" data-tab="ref" class="tab">💭<span>Riflessioni</span></button>
   </nav>
 
   <dialog id="td-edit">
@@ -168,6 +182,22 @@
     </form>
   </dialog>
 
+  <dialog id="rf-dlg">
+    <form method="dialog" id="rf-form" class="vform">
+      <div class="dlg-head"><h2 id="rf-h">Nuova riflessione</h2><span></span><button value="save" class="primary">Salva</button><button value="cancel" formnovalidate class="ghost">Annulla</button></div>
+      <label>Testo<textarea id="rf-body" rows="6" placeholder="Un pensiero, una frase, una citazione…"></textarea></label>
+      <label>Autore <small>(facoltativo: vuoto è un pensiero tuo)</small><input id="rf-author" list="rf-authors" autocomplete="off"></label>
+      <datalist id="rf-authors"></datalist>
+      <label>Fonte <small>(facoltativa: libro, film, podcast…)</small><input id="rf-source" autocomplete="off"></label>
+      <label>Tag <small>(separati da virgola)</small><input id="rf-tags" autocomplete="off" autocapitalize="none" placeholder="es. amore, lavoro"></label>
+      <div id="rf-tagsug" class="rf-tagsug"></div>
+      <p id="rf-err" class="hint danger" hidden></p>
+      <div class="dlg-actions">
+        <button type="button" id="rf-delete" class="ghost danger">Elimina</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="cat-dlg">
     <h2 id="cd-title"></h2>
     <ul id="cd-list" class="items ex-list"></ul>
@@ -205,6 +235,10 @@
       </div>
       <label class="switch lvl-switch"><input type="checkbox" id="nt-morning"><span>⏰ Promemoria del mattino (8:00)</span></label>
       <label class="switch lvl-switch"><input type="checkbox" id="nt-cal"><span>📅 Promemoria del calendario</span></label>
+      <p class="lvl-title">💭 Riflessioni</p>
+      <label class="switch lvl-switch ri"><input type="checkbox" id="nt-ri_new"><span>Nuove riflessioni dell'altro</span></label>
+      <label class="switch lvl-switch ri"><input type="checkbox" id="nt-ri_heart"><span>❤️ ricevuti</span></label>
+      <label class="switch lvl-switch ri"><input type="checkbox" id="nt-ri_daily"><span>La riflessione di oggi (8:00)</span></label>
     </div>
     <p class="hint lvl-hint" id="nt-hint"></p>
     <button type="button" id="nt-test" class="ghost">Invia una notifica di prova</button>
